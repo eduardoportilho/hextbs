@@ -11,7 +11,7 @@ function Grid(dimension) {
   this.buildCells();
 }
 
-Grid.FIRST_CELL_CENTER_POSITION =  {x: 80, y: 80};
+Grid.FIRST_CELL_CENTER_POSITION =  {x: 60, y: 60};
 
 Grid.prototype.buildCells = function() {
   this.cells = {};
@@ -35,13 +35,14 @@ Grid.prototype.draw = function() {
   for (var row = 0; row < this.dimension ; row++) {
     for (var col = 0; col < this.dimension ; col++) {
       var hex = this.cells[row][col];
-      
-      this.setHexBackgroundStyle(hex);
-      this.ctx.fill(hex.path);
-      this.ctx.stroke(hex.path);
+      if (!hex.isEmpty) {
+        this.setHexBackgroundStyle(hex);
+        this.ctx.fill(hex.path);
+        this.ctx.stroke(hex.path);
 
-      this.setHexTextStyle();
-      this.ctx.fillText(hex.population, hex.centerPosition.x, hex.centerPosition.y);
+        this.setHexTextStyle();
+        this.ctx.fillText(hex.population, hex.centerPosition.x, hex.centerPosition.y);
+      }
     }
   }
 }
@@ -123,6 +124,15 @@ Grid.prototype.getCellOnPoint = function(point) {
   }
   return undefined;
 }
+
+Grid.prototype.setEmptyCells = function(board) {
+  for (var row = 0; row < this.dimension ; row++) {
+    for (var col = 0; col < this.dimension ; col++) {
+      var cell = this.cells[row][col];
+      cell.isEmpty = !board[row][col].hasCell;
+    }
+  }
+};
 
 /**
  * Get the position of the center of the hex.

@@ -5,6 +5,7 @@ function Hex(row, col, centerPosition) {
   this.path = _buidHexPath(Hex.HEX_EDGE_SIZE, centerPosition);
   this.population =  0;
   this.isSelected = false;
+  this.isEmpty = false;
 }
 
 Hex.HEX_EDGE_SIZE = 30;
