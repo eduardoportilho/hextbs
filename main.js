@@ -6,6 +6,7 @@ var origin =  {x: 80, y: 80};
 
 var hexes = {};
 var highlightedHex = undefined;
+var selectedHex = undefined;
 
 canvas.onmousemove = function(e) {
   var mousePosition = {
@@ -19,6 +20,26 @@ canvas.onmousemove = function(e) {
   }
 };
 
+canvas.onmousedown = function(e) {
+  var mousePosition = {
+    x: e.clientX - e.target.offsetLeft,
+    y: e.clientY - e.target.offsetTop    
+  };
+  var hexOverMouse = getHexContainingPoint(mousePosition);
+  if (hexOverMouse !== undefined) {
+
+    if (isSameHexCoords(hexOverMouse, selectedHex)) {
+      selectedHex = undefined;
+    } else {
+      selectedHex = hexOverMouse;
+    }
+    draw();
+  }
+};
+
+/**
+ * Draw the grid.
+ */
 function draw() {
   hexes = {};
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -26,8 +47,11 @@ function draw() {
     hexes[row] = {};
 
     for (var col = 0; col < gridDimension ; col++) {
-      var isHover = highlightedHex && highlightedHex.col === col && highlightedHex.row === row;
-      style(isHover);
+      var coord = {
+        row: row,
+        col: col
+      };
+      style(coord);
 
       var center = getHexCenterPoint(row, col, edgeSize, origin);
       var hex = buildHex(edgeSize, center);
@@ -38,8 +62,16 @@ function draw() {
   }
 }
 
-function style(hover) {
-  if (hover) {
+/**
+ * Change the context style for the hex at the provided coordinates.
+ * @param  {Coordinate} coord - Hex coordinate.
+ */
+function style(coord) {
+  if (isSameHexCoords(coord, selectedHex)) {
+    ctx.fillStyle = 'red';
+    ctx.strokeStyle = 'blue';
+  }
+  else if (isSameHexCoords(coord, highlightedHex)) {
     ctx.fillStyle = 'blue';
     ctx.strokeStyle = 'orange';
   } else {
