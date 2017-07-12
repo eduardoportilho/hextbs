@@ -1,8 +1,8 @@
 var canvas = document.getElementById('game');
 var ctx = canvas.getContext('2d');
-var gridDimension = 5;
-var edgeSize = 50;
-var origin =  {x: 100, y: 100};
+var gridDimension = 10;
+var edgeSize = 30;
+var origin =  {x: 80, y: 80};
 
 var hexes = {};
 var highlightedHex = undefined;
@@ -20,7 +20,6 @@ canvas.onmousemove = function(e) {
 };
 
 function draw() {
-
   hexes = {};
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (var row = 0; row < gridDimension ; row++) {
@@ -94,7 +93,7 @@ function getHexCenterPoint(row, col, edgeSize, origin) {
   
   var x = col * hexWidth;
   var y = row * (3 * hexHeight / 4);
-  if (row % 2 === 0) {
+  if (row % 2 !== 0) {
     x += hexWidth / 2;
   }
 
@@ -104,6 +103,12 @@ function getHexCenterPoint(row, col, edgeSize, origin) {
   }
 }
 
+/**
+ * Get the coordinates of the hex containing the point or undefined if the point
+ * is not contained by any hex.
+ * @param  {Point} point - [X, Y] point.
+ * @return {Coordinate} Hex coordinate or undefined.
+ */
 function getHexContainingPoint(point) {
   for (var row = 0; row < gridDimension ; row++) {
     for (var col = 0; col < gridDimension ; col++) {
