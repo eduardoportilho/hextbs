@@ -1,6 +1,7 @@
 function Hex(row, col, centerPosition) {
   this.row = row;
   this.col = col;
+  this.centerPosition = centerPosition;
   this.path = _buidHexPath(Hex.HEX_EDGE_SIZE, centerPosition);
   this.population =  0;
   this.isSelected = false;
@@ -20,6 +21,7 @@ function _buidHexPath(edgeSize, center) {
     angleRad;
 
   var hexPath = new Path2D();
+
   for (var cornerIndex = 0; cornerIndex <= 6; cornerIndex++) {
     angleDeg = 60 * cornerIndex + 30;
     angleRad = Math.PI / 180 * angleDeg;

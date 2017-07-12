@@ -35,18 +35,22 @@ Grid.prototype.draw = function() {
   for (var row = 0; row < this.dimension ; row++) {
     for (var col = 0; col < this.dimension ; col++) {
       var hex = this.cells[row][col];
-      this.setContextStyle(hex);
+      
+      this.setHexBackgroundStyle(hex);
       this.ctx.fill(hex.path);
       this.ctx.stroke(hex.path);
+
+      this.setHexTextStyle();
+      this.ctx.fillText(hex.population, hex.centerPosition.x, hex.centerPosition.y);
     }
   }
 }
 
 /**
- * Change the context style for the hex.
- * @param  {Hex} hex
+ * Change the context style for painting the hex background.
+ * @param {Hex} hex
  */
-Grid.prototype.setContextStyle = function(hex) {
+Grid.prototype.setHexBackgroundStyle = function(hex) {
   if (hex.isSelected) {
     this.ctx.fillStyle = 'red';
     this.ctx.strokeStyle = 'blue';
@@ -58,6 +62,16 @@ Grid.prototype.setContextStyle = function(hex) {
     this.ctx.fillStyle = 'orange';
     this.ctx.strokeStyle = 'blue';
   }
+}
+
+/**
+ * Change the context style for painting the hex text.
+ */
+Grid.prototype.setHexTextStyle = function() {
+  this.ctx.font = '13px monospace';
+  this.ctx.textAlign = 'center';
+  this.ctx.textBaseline = 'middle';
+  this.ctx.fillStyle = 'black';
 }
 
 /**
