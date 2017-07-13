@@ -13,11 +13,11 @@ function Grid(board) {
 
 Grid.FIRST_CELL_CENTER_POSITION =  {x: 60, y: 60};
 Grid.PLAYER_COLORS = [
+  'red',
   'yellow',
   'green',
   'grey',
   'cyan',
-  'magenta',
 ];
 
 Grid.prototype.buildCells = function() {
@@ -62,16 +62,18 @@ Grid.prototype.setHexBackgroundStyle = function(cell) {
     this.ctx.fillStyle = 'red';
     this.ctx.strokeStyle = 'blue';
   }
-  else if (_isSameCoordinates(cell, this.highlightedCell)) {
-    this.ctx.fillStyle = 'blue';
-    this.ctx.strokeStyle = 'orange';
-  }
   else if (cell.player != undefined) {
     this.ctx.fillStyle = Grid.PLAYER_COLORS[cell.player];
     this.ctx.strokeStyle = 'blue';
   } else {
     this.ctx.fillStyle = 'orange';
     this.ctx.strokeStyle = 'blue';
+  }
+
+  if (_isSameCoordinates(cell, this.highlightedCell)) {
+    this.ctx.globalAlpha = 0.75;
+  } else {
+    this.ctx.globalAlpha = 1;
   }
 }
 
