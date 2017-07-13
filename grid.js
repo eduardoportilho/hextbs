@@ -97,12 +97,21 @@ Grid.prototype.onClick = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
-  this._selectCell(cellOverMouse);
+  this._selectAdjacentCells(cellOverMouse);
 }
 
 Grid.prototype._selectCell = function(cell) {
   if (cell !== undefined) {
     cell.isSelected = !cell.isSelected;
+    this.draw();
+  }
+}
+
+Grid.prototype._selectAdjacentCells = function(cell) {
+  if (cell !== undefined) {
+    this.board.getAdjacentCells(cell).forEach(function (adjacent) {
+      adjacent.isSelected = !adjacent.isSelected;
+    });
     this.draw();
   }
 }
