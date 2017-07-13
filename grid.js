@@ -12,6 +12,13 @@ function Grid(board) {
 }
 
 Grid.FIRST_CELL_CENTER_POSITION =  {x: 60, y: 60};
+Grid.PLAYER_COLORS = [
+  'yellow',
+  'green',
+  'grey',
+  'cyan',
+  'magenta',
+];
 
 Grid.prototype.buildCells = function() {
   this.board.getNonEmptyCells().forEach(function (cell) {
@@ -38,9 +45,11 @@ Grid.prototype.draw = function() {
     this.ctx.fill(cell.hex.path);
     this.ctx.stroke(cell.hex.path);
 
-    this.setHexTextStyle();
-    var label = cell.row + ',' + cell.col;
-    this.ctx.fillText(label, cell.hex.center.x, cell.hex.center.y);
+    if (cell.population !== undefined) {
+      this.setHexTextStyle();
+      var label = cell.population;
+      this.ctx.fillText(label, cell.hex.center.x, cell.hex.center.y); 
+    }
   }.bind(this));
 }
 
@@ -56,6 +65,10 @@ Grid.prototype.setHexBackgroundStyle = function(cell) {
   else if (_isSameCoordinates(cell, this.highlightedCell)) {
     this.ctx.fillStyle = 'blue';
     this.ctx.strokeStyle = 'orange';
+  }
+  else if (cell.player != undefined) {
+    this.ctx.fillStyle = Grid.PLAYER_COLORS[cell.player];
+    this.ctx.strokeStyle = 'blue';
   } else {
     this.ctx.fillStyle = 'orange';
     this.ctx.strokeStyle = 'blue';
@@ -82,10 +95,7 @@ Grid.prototype.onMouseMove = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
-  if (!_isSameCoordinates(cellOverMouse, this.highlightedCell)) {
-    this.highlightedCell = cellOverMouse;
-    this.draw();
-  }
+  this._highlightCell(cellOverMouse);
 };
 
 /**
@@ -98,7 +108,14 @@ Grid.prototype.onClick = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
-  this._selectAdjacentCells(cellOverMouse);
+  // this._selectAdjacentCells(cellOverMouse);
+}
+
+Grid.prototype._highlightCell = function(cell) {
+  if (!_isSameCoordinates(cell, this.highlightedCell)) {
+    this.highlightedCell = cell;
+    this.draw();
+  }
 }
 
 Grid.prototype._selectCell = function(cell) {

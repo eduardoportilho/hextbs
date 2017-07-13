@@ -10,16 +10,23 @@ BoardGenerator.prototype.setBoard = function(board) {
   this.board = board;
 };
 
-BoardGenerator.prototype.generateBoard = function() {
+BoardGenerator.prototype.generateBoard = function(playerCount) {
   this.emptyCount = 0;
   this.board = new Board(this.dimension);
   this.removeSomeCells();
+
+  var playerCells = this.getRandomCells(playerCount);
+  playerCells.forEach(function (cell, index) {
+    cell.player = index;
+    cell.population = 3;
+  });
+
   return this.board;
 }
 
 BoardGenerator.prototype.removeSomeCells = function() {
   while (this.emptyCount < this.minEmpty) {
-    var cell = this.getRandomCell();
+    var cell = this.getRandomCells()[0];
     if (!cell) {
       break;
     }
@@ -46,15 +53,17 @@ BoardGenerator.prototype.removeSomeCells = function() {
   }
 };
 
-BoardGenerator.prototype.getRandomCell = function() {
-  while (true) {
-    var row = _getRandomInt(0, this.dimension);
-    var col = _getRandomInt(0, this.dimension);
-    var cell = this.board.getCell({row: row, col: col});
-    if (!cell.isEmpty) {
-      return cell;
-    }
+BoardGenerator.prototype.getRandomCells = function(count) {
+  count = count || 1;
+  var cells = [];
+  var nonEmpty = this.board.getNonEmptyCells();
+
+  while (cells.length < count && nonEmpty.length > 0) {
+    var index = _getRandomInt(0, nonEmpty.length);
+    cells.push(nonEmpty[index]);
+    nonEmpty.splice(index, 1);
   }
+  return cells;
 };
 
 BoardGenerator.prototype.removeCell = function(coord) {

@@ -4,7 +4,7 @@ function Game(gridDimension) {
 
 Game.prototype.init = function() {
   var boardGenerator = new BoardGenerator(this.gridDimension)
-  this.board = boardGenerator.generateBoard();
+  this.board = boardGenerator.generateBoard(5);
   this.grid = new Grid(this.board);
   this.grid.draw();
 };
