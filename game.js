@@ -33,25 +33,59 @@ Game.prototype.onPlayerClick = function(targetCell) {
 
 Game.prototype.move = function(targetCell) {
   // assume that targetCell is not occupied
-  var adjcentPlayerCells = this.board.getAdjacentCells(targetCell).filter(function(adjacent) {
-    return adjacent.player === Game.PLAYER_ID &&
-      adjacent.population > 1;
-  });
-
-  var movingPopulation = 0;
-  adjcentPlayerCells.forEach(function (playerCell) {
-    var half = Math.round(playerCell.population / 2);
-    movingPopulation += half;
-    playerCell.population -= half;
-  });
-
+  var movingPopulation = this.allocateAdjacentPopulation(targetCell, Game.PLAYER_ID, false);
   if (movingPopulation > 0) {
     targetCell.player = Game.PLAYER_ID;
     targetCell.population = movingPopulation;
   }
 };
 
-Game.prototype.attack = function(targetCell) {};
+Game.prototype.attack = function(targetCell) {
+  // assume that targetCell is occupied
+  var attackingPopulation = this.allocateAdjacentPopulation(targetCell, Game.PLAYER_ID, true);
+  var deffendingPopulation = targetCell.population;
+  var battleResult = this.battleResult(attackingPopulation, deffendingPopulation);
+
+  targetCell.population = battleResult.survivors;
+  if (battleResult.attackWin) {
+    targetCell.player = Game.PLAYER_ID;
+  }
+};
+
+
+Game.prototype.battleResult = function(attackingPopulation, deffendingPopulation) {
+  // TODO: implement battle logic
+  var atackWin = Random.yesOrNo();
+  var survivors = Random.getRandomInt(1, (atackWin ? attackingPopulation : deffendingPopulation));
+  return {
+    attackWin: atackWin,
+    survivors: survivors
+  };
+}
+
+/**
+ * Subtract half of the population of all player cells adjacent
+ * to target and return the total subtracted.
+ * @param  {Cell} targetCell - Destination cell.
+ * @return {number} Subtracted population
+ */
+Game.prototype.allocateAdjacentPopulation = function(targetCell, playerId, attack) {
+  var adjcentPlayerCells = this.board.getAdjacentCells(targetCell)
+    .filter(function(adjacent) {
+      return adjacent.player === playerId &&
+        adjacent.population > 1;
+    });
+
+  var movingTotal = 0;
+  adjcentPlayerCells.forEach(function (playerCell) {
+    var moving = attack ? 
+      playerCell.population - 1 :
+      Math.floor(playerCell.population / 2);
+    movingTotal += moving;
+    playerCell.population -= moving;
+  });
+  return movingTotal;
+};
 
 var game = new Game(10);
 game.init();
