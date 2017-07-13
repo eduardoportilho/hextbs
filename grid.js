@@ -1,12 +1,12 @@
-function Grid(dimension) {
-  this.dimension = dimension;
+function Grid(board) {
   this.canvas = document.getElementById('game');
   this.ctx = this.canvas.getContext('2d');
 
   this.canvas.onmousemove = this.onMouseMove.bind(this);
   this.canvas.onmousedown = this.onClick.bind(this);
 
-  this.cells = {};
+  this.board = board;
+  this.dimension = board.dimension;
   this.highlightedCell = undefined;
   this.buildCells();
 }
@@ -14,18 +14,19 @@ function Grid(dimension) {
 Grid.FIRST_CELL_CENTER_POSITION =  {x: 60, y: 60};
 
 Grid.prototype.buildCells = function() {
-  this.cells = {};
   for (var row = 0; row < this.dimension ; row++) {
-    this.cells[row] = {};
-
     for (var col = 0; col < this.dimension ; col++) {
-      var centerPosition = _getHexCenterPosition(
-        row,
-        col,
-        Hex.HEX_EDGE_SIZE,
-        Grid.FIRST_CELL_CENTER_POSITION
-      );
-      this.cells[row][col] = new Hex(row, col, centerPosition);
+      var cell = this.board.getCell({row: row, col: col});
+      if (!cell.isEmpty) {
+        var centerPosition = _getHexCenterPosition(
+          row,
+          col,
+          Hex.HEX_EDGE_SIZE,
+          Grid.FIRST_CELL_CENTER_POSITION
+        );
+        var hex = new Hex(row, col, centerPosition);
+        cell.hex = hex;  
+      }
     }
   }
 }
@@ -34,8 +35,9 @@ Grid.prototype.draw = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   for (var row = 0; row < this.dimension ; row++) {
     for (var col = 0; col < this.dimension ; col++) {
-      var hex = this.cells[row][col];
-      if (!hex.isEmpty) {
+      var cell = this.board.getCell({row: row, col: col});
+      if (!cell.isEmpty) {
+        var hex = cell.hex;
         this.setHexBackgroundStyle(hex);
         this.ctx.fill(hex.path);
         this.ctx.stroke(hex.path);
@@ -102,7 +104,7 @@ Grid.prototype.onClick = function(e) {
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
   if (cellOverMouse !== undefined) {
-    cellOverMouse.isSelected = !cellOverMouse.isSelected;
+    cellOverMouse.hex.isSelected = !cellOverMouse.hex.isSelected;
     this.draw();
   }
 }
@@ -116,8 +118,9 @@ Grid.prototype.onClick = function(e) {
 Grid.prototype.getCellOnPoint = function(point) {
   for (var row = 0; row < this.dimension ; row++) {
     for (var col = 0; col < this.dimension ; col++) {
-      var cell = this.cells[row][col];
-      if (this.ctx.isPointInPath(cell.path, point.x, point.y)) {
+      var cell = this.board.getCell({row: row, col: col});
+      if (!cell.isEmpty &&
+        this.ctx.isPointInPath(cell.hex.path, point.x, point.y)) {
         return cell;
       }
     }
@@ -125,14 +128,14 @@ Grid.prototype.getCellOnPoint = function(point) {
   return undefined;
 }
 
-Grid.prototype.setEmptyCells = function(board) {
-  for (var row = 0; row < this.dimension ; row++) {
-    for (var col = 0; col < this.dimension ; col++) {
-      var cell = this.cells[row][col];
-      cell.isEmpty = board.getCell({row: row, col: col}).isEmpty;
-    }
-  }
-};
+// Grid.prototype.setEmptyCells = function(board) {
+//   for (var row = 0; row < this.dimension ; row++) {
+//     for (var col = 0; col < this.dimension ; col++) {
+//       var cell = this.cells[row][col];
+//       cell.isEmpty = board.getCell({row: row, col: col}).isEmpty;
+//     }
+//   }
+// };
 
 /**
  * Get the position of the center of the hex.
