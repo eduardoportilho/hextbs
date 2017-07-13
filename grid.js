@@ -1,3 +1,7 @@
+/**
+ * Knows how to draw the grid and pass user action to 'game'.
+ */
+
 function Grid(board) {
   this.canvas = document.getElementById('game');
   this.ctx = this.canvas.getContext('2d');
@@ -22,13 +26,13 @@ Grid.PLAYER_COLORS = [
 
 Grid.prototype.buildCells = function() {
   this.board.getNonEmptyCells().forEach(function (cell) {
-    var hexCenter = Hex.getHexCenterPosition(
+    var hexCenter = HexPath.getHexCenterPosition(
       cell.row,
       cell.col,
-      Hex.HEX_EDGE_SIZE,
+      HexPath.HEX_EDGE_SIZE,
       Grid.FIRST_CELL_CENTER_POSITION
     );
-    var path = Hex.buidHexPath(hexCenter, Hex.HEX_EDGE_SIZE);
+    var path = HexPath.buidHexPath(hexCenter, HexPath.HEX_EDGE_SIZE);
     cell.hex = {
       path: path,
       center: hexCenter
@@ -55,7 +59,7 @@ Grid.prototype.draw = function() {
 
 /**
  * Change the context style for painting the hex background.
- * @param {Hex} hex
+ * @param {Cell} cell
  */
 Grid.prototype.setHexBackgroundStyle = function(cell) {
   if (cell.isSelected) {
@@ -140,7 +144,7 @@ Grid.prototype._selectAdjacentCells = function(cell) {
  * Get the coordinates of the hex containing the point or undefined if the point
  * is not contained by any hex.
  * @param  {Point} point - [X, Y] point.
- * @return {Coordinate} Hex coordinate or undefined.
+ * @return {Cell} Cell or undefined.
  */
 Grid.prototype.getCellOnPoint = function(point) {
   return this.board.getNonEmptyCells().find(function (cell) {
@@ -151,8 +155,8 @@ Grid.prototype.getCellOnPoint = function(point) {
 
 /**
  * Check if 2 cells are the same looking to their coordinates.
- * @param  {Hex} cell1
- * @param  {Hex} cell2
+ * @param  {Cell} cell1
+ * @param  {Cell} cell2
  * @return {Boolean}
  */
 function _isSameCoordinates(cell1, cell2) {

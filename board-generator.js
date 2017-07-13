@@ -1,3 +1,7 @@
+/**
+ * Generate random board configurations.
+ */
+
 var CONTINUE_TRACK_CHANCE = 0.7;
 
 function BoardGenerator(dimension) {
@@ -5,10 +9,6 @@ function BoardGenerator(dimension) {
   this.maxEmpty = Math.round((this.dimension * this.dimension) / 2);
   this.minEmpty = Math.round(this.maxEmpty * 0.7);
 }
-
-BoardGenerator.prototype.setBoard = function(board) {
-  this.board = board;
-};
 
 BoardGenerator.prototype.generateBoard = function(playerCount) {
   this.emptyCount = 0;

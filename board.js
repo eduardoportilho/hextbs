@@ -1,3 +1,7 @@
+/**
+ * Knows about the state of the board
+ */
+
 function Board(dimension) {
   this.dimension = dimension;
   this.cells = {};
@@ -86,4 +90,4 @@ Board.prototype.getAdjacentCells = function(cell) {
   return adjacentCoords.map(function (coord) {
     return this.cells[coord.row][coord.col];
   }.bind(this));
-}
+};

@@ -1,6 +1,10 @@
-function Hex() {}
+/**
+ * Knows how to draw a hex path.
+ */
 
-Hex.HEX_EDGE_SIZE = 30;
+function HexPath() {}
+
+HexPath.HEX_EDGE_SIZE = 30;
 
 /**
  * Build a hex path with center on the provided position.
@@ -8,7 +12,7 @@ Hex.HEX_EDGE_SIZE = 30;
  * @param  {number} edgeSize - Size of the hex edge.
  * @return {Path2D} Hex path.
  */
-Hex.buidHexPath = function(center, edgeSize) {
+HexPath.buidHexPath = function(center, edgeSize) {
   var cornerPoint = {x:null, y:null},
     angleDeg, 
     angleRad;
@@ -39,7 +43,7 @@ Hex.buidHexPath = function(center, edgeSize) {
  * @param  {Point} origin - [X, Y] position of the center of the first (0,0) hex.
  * @return {Point} [X, Y] position of the center of the hex at [row, col].
  */
-Hex.getHexCenterPosition = function(row, col, edgeSize, origin) {
+HexPath.getHexCenterPosition = function(row, col, edgeSize, origin) {
   origin = origin;
   edgeSize = edgeSize || 50;
   var hexHeight = edgeSize * 2;
