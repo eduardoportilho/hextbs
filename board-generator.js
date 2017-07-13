@@ -20,6 +20,10 @@ BoardGenerator.prototype.removeSomeCells = function() {
       break;
     }
     this.removeCell(cell);
+    if (!this.isBoardConnected(this.board)) {
+      this.undoRemoveCell(cell);
+      break;
+    }
 
     //should continue track?
     while (this.emptyCount < this.maxEmpty && 
@@ -27,6 +31,10 @@ BoardGenerator.prototype.removeSomeCells = function() {
       cell = this.getRandomAdjacentCell(cell);
       if(cell) {
         this.removeCell(cell);
+        if (!this.isBoardConnected(this.board)) {
+          this.undoRemoveCell(cell);
+          break;
+        }
       } else {
         break;
       }
@@ -39,13 +47,13 @@ BoardGenerator.prototype.getRandomCell = function() {
     var row = _getRandomInt(0, this.dimension);
     var col = _getRandomInt(0, this.dimension);
     var cell = this.board[row][col];
-    if (cell.hasCell) {
+    if (!cell.isEmpty) {
       return cell;
     }
   }
 };
 
-BoardGenerator.prototype.getRandomAdjacentCell = function(cell) {
+BoardGenerator.prototype.getAdjacentCells = function(cell) {
   var adjacentCoords;
   var r = cell.row, c = cell.col;
   if (r % 2 === 0) {
@@ -74,19 +82,71 @@ BoardGenerator.prototype.getRandomAdjacentCell = function(cell) {
       coord.col >= 0 &&
       coord.row < this.dimension &&
       coord.col < this.dimension &&
-      this.board[coord.row][coord.col].hasCell;
-  });
-  if (adjacentCoords.length === 0) {
+      !this.board[coord.row][coord.col].isEmpty;
+  }.bind(this));
+
+  return adjacentCoords.map(function (coord) {
+    return this.board[coord.row][coord.col];
+  }.bind(this));
+}
+
+BoardGenerator.prototype.getRandomAdjacentCell = function(cell) {
+  var adjacentCells = this.getAdjacentCells(cell);
+  if (adjacentCells.length === 0) {
     return undefined;
   }
-  var index = _getRandomInt(0, adjacentCoords.length);
-  return adjacentCoords[index];
+  var index = _getRandomInt(0, adjacentCells.length);
+  return adjacentCells[index];
 };
 
 BoardGenerator.prototype.removeCell = function(coord) {
-  this.board[coord.row][coord.col].hasCell = false;
+  this.board[coord.row][coord.col].isEmpty = true;
   this.emptyCount++;
 };
+
+BoardGenerator.prototype.undoRemoveCell = function(coord) {
+  this.board[coord.row][coord.col].isEmpty = false;
+  this.emptyCount--;
+};
+
+BoardGenerator.prototype.isBoardConnected = function() {
+  //clear connected flag and find first cell
+  var firstCell = undefined;
+  for (var row = 0; row < this.dimension ; row++) {
+    for (var col = 0; col < this.dimension ; col++) {
+      var cell = this.board[row][col];
+      if (!firstCell && !cell.isEmpty) {
+        firstCell = cell;
+      }
+      cell.isConnected = false;
+    }
+  }
+
+  // set connected flag
+  this.connectCellAndAdjcent(firstCell);
+
+  // check for unconected cells
+  for (var row = 0; row < this.dimension ; row++) {
+    for (var col = 0; col < this.dimension ; col++) {
+      var cell = this.board[row][col];
+      if (!cell.isConnected && !cell.isEmpty) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+BoardGenerator.prototype.connectCellAndAdjcent = function(cell) {
+  cell.isConnected = true;
+  var adjacentCells = this.getAdjacentCells(cell);
+  for (var i = 0; i < adjacentCells.length ; i++) {
+      var adjacent = adjacentCells[i];
+      if (!adjacent.isConnected && !adjacent.isEmpty) {
+        this.connectCellAndAdjcent(adjacent);
+      }
+  }
+}
 
 function _generateEmptyBoard(dimension) {
   var board = {};
@@ -96,7 +156,7 @@ function _generateEmptyBoard(dimension) {
       board[row][col] = {
         row: row,
         col: col,
-        hasCell: true
+        isEmpty: false
       };
     }
   }
