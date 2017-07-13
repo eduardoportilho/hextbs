@@ -38,7 +38,7 @@ BoardGenerator.prototype.removeSomeCells = function() {
 
     //should continue track?
     while (this.emptyCount < this.maxEmpty && 
-      _yesOrNo(CONTINUE_TRACK_CHANCE)) {
+      Random.yesOrNo(CONTINUE_TRACK_CHANCE)) {
       cell = this.getRandomAdjacentCell(cell);
       if(cell) {
         this.removeCell(cell);
@@ -59,7 +59,7 @@ BoardGenerator.prototype.getRandomCells = function(count) {
   var nonEmpty = this.board.getNonEmptyCells();
 
   while (cells.length < count && nonEmpty.length > 0) {
-    var index = _getRandomInt(0, nonEmpty.length);
+    var index = Random.getRandomInt(0, nonEmpty.length);
     cells.push(nonEmpty[index]);
     nonEmpty.splice(index, 1);
   }
@@ -81,7 +81,7 @@ BoardGenerator.prototype.getRandomAdjacentCell = function(cell) {
   if (adjacentCells.length === 0) {
     return undefined;
   }
-  var index = _getRandomInt(0, adjacentCells.length);
+  var index = Random.getRandomInt(0, adjacentCells.length);
   return adjacentCells[index];
 };
 
@@ -112,14 +112,4 @@ BoardGenerator.prototype.connectCellAndAdjcent = function(cell) {
   }).forEach(function (adjacent) {
     this.connectCellAndAdjcent(adjacent);
   }.bind(this));
-}
-
-function _yesOrNo(yesChance) {
-  return Math.random() < yesChance;
-}
-
-function _getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
