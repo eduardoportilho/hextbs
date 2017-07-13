@@ -39,7 +39,8 @@ Grid.prototype.draw = function() {
     this.ctx.stroke(cell.hex.path);
 
     this.setHexTextStyle();
-    this.ctx.fillText(cell.population, cell.hex.center.x, cell.hex.center.y);
+    var label = cell.row + ',' + cell.col;
+    this.ctx.fillText(label, cell.hex.center.x, cell.hex.center.y);
   }.bind(this));
 }
 

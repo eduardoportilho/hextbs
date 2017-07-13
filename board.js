@@ -57,20 +57,20 @@ Board.prototype.getAdjacentCells = function(cell) {
   if (r % 2 === 0) {
     adjacentCoords = [
       {row: r-1, col: c-1},
-      {row: r, col: c-1},
-      {row: r+1, col: c},
-      {row: r, col: c+1},
-      {row: r-1, col: c+1},
       {row: r-1, col: c},
+      {row: r,   col: c+1},
+      {row: r+1, col: c},
+      {row: r+1, col: c-1},
+      {row: r,   col: c-1},
     ];
   } else {
     adjacentCoords = [
-      {row: r, col: c-1},
-      {row: r+1, col: c-1},
-      {row: r+1, col: c},
-      {row: r+1, col: c+1},
-      {row: r, col: c+1},
       {row: r-1, col: c},
+      {row: r-1, col: c+1},
+      {row: r,   col: c+1},
+      {row: r+1, col: c+1},
+      {row: r+1, col: c},
+      {row: r,   col: c-1},
     ];
   }
 
