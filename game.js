@@ -2,34 +2,30 @@
  * Knows about initial game setup and player actions.
  */
 
-function Game(gridDimension) {
+function Game(gridDimension, playerCount) {
   this.gridDimension = gridDimension;
+  this.playerCount = playerCount;
 }
 
 Game.PLAYER_ID = 0;
 
 Game.prototype.init = function() {
-  document.getElementById('advance').onclick = this.onAdvanceTurn.bind(this);
-  document.onkeydown = function(e) {
-  if (e.keyCode === 32) {
-    this.onAdvanceTurn();
-    return e.preventDefault();
-  }
-}.bind(this);
-
-
-  var boardGenerator = new BoardGenerator(this.gridDimension)
-  this.board = boardGenerator.generateBoard(5);
+  var boardGenerator = new BoardGenerator(this.gridDimension, this.playerCount)
+  this.board = boardGenerator.generateBoard();
   this.grid = new Grid(this.board, this);
   this.grid.draw();
 };
 
-Game.prototype.onAdvanceTurn = function() {
+Game.prototype.grow = function() {
   this.board.getPlayerCells().forEach(function(cell) {
     var max = Math.min(cell.population, 3);
     var growth = Random.getRandomIntInclusive(0, max);
     cell.population += growth;
   });
+};
+
+Game.prototype.onAdvanceTurn = function() {
+  this.grow();
   this.grid.draw();
 };
 
@@ -70,7 +66,7 @@ Game.prototype.attack = function(targetCell) {
   for (var i = 0 ; i < attackingCells.length ; i++) {
     var attackerCell = attackingCells[i];
     var attackingPopulation = attackerCell.population - 1;
-    var result = this.riskAttack(attackingPopulation, defendingPopulation);
+    var result = this.simulateRiskAttack(attackingPopulation, defendingPopulation);
 
     attackingPopulation -= result.attackerKills;
     if (result.attackWin) {
@@ -96,7 +92,7 @@ Game.prototype.attack = function(targetCell) {
  *         {number} result.defenderKills - How many defensors died?
  *         {boolean} result.attackWin - Attack successfull?
  */
-Game.prototype.riskAttack = function(attackingPopulation, defendingPopulation) {
+Game.prototype.simulateRiskAttack = function(attackingPopulation, defendingPopulation) {
   var attacks = Math.min(attackingPopulation, defendingPopulation);
   var attackerKills = 0, defenderKills = 0;
   while (attacks-- > 0) {
@@ -136,5 +132,5 @@ Game.prototype.allocateAdjacentPopulation = function(targetCell, playerId) {
   return movingTotal;
 };
 
-var game = new Game(10);
+var game = new Game(10, 5);
 game.init();

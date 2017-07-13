@@ -14,6 +14,14 @@ function Grid(board, game) {
   this.canvas.onmousemove = this.onMouseMove.bind(this);
   this.canvas.onmousedown = this.onClick.bind(this);
 
+  document.getElementById('advance').onclick = this.game.onAdvanceTurn.bind(this.game);
+  document.onkeydown = function(e) {
+    if (e.keyCode === 32) {
+      this.game.onAdvanceTurn.call(this.game);
+      return e.preventDefault();
+    }
+  }.bind(this);
+
   this.buildCells();
 }
 
