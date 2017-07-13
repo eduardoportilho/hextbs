@@ -97,8 +97,12 @@ Grid.prototype.onClick = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
-  if (cellOverMouse !== undefined) {
-    cellOverMouse.isSelected = !cellOverMouse.isSelected;
+  this._selectCell(cellOverMouse);
+}
+
+Grid.prototype._selectCell = function(cell) {
+  if (cell !== undefined) {
+    cell.isSelected = !cell.isSelected;
     this.draw();
   }
 }

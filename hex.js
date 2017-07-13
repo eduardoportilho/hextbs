@@ -1,12 +1,4 @@
-function Hex(row, col, centerPosition) {
-  this.row = row;
-  this.col = col;
-  this.centerPosition = centerPosition;
-  this.path = Hex.buidHexPath(centerPosition);
-  this.population =  0;
-  this.isSelected = false;
-  this.isEmpty = false;
-}
+function Hex() {}
 
 Hex.HEX_EDGE_SIZE = 30;
 
