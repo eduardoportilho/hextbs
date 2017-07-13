@@ -2,16 +2,18 @@
  * Knows how to draw the grid and pass user action to 'game'.
  */
 
-function Grid(board) {
+function Grid(board, game) {
+  this.board = board;
+  this.game = game;
+  this.dimension = board.dimension;
+  this.highlightedCell = undefined;
+
   this.canvas = document.getElementById('game');
   this.ctx = this.canvas.getContext('2d');
 
   this.canvas.onmousemove = this.onMouseMove.bind(this);
   this.canvas.onmousedown = this.onClick.bind(this);
 
-  this.board = board;
-  this.dimension = board.dimension;
-  this.highlightedCell = undefined;
   this.buildCells();
 }
 
@@ -114,28 +116,12 @@ Grid.prototype.onClick = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
-  // this._selectAdjacentCells(cellOverMouse);
+  this.game.onPlayerClick(cellOverMouse);
 }
 
 Grid.prototype._highlightCell = function(cell) {
   if (!_isSameCoordinates(cell, this.highlightedCell)) {
     this.highlightedCell = cell;
-    this.draw();
-  }
-}
-
-Grid.prototype._selectCell = function(cell) {
-  if (cell !== undefined) {
-    cell.isSelected = !cell.isSelected;
-    this.draw();
-  }
-}
-
-Grid.prototype._selectAdjacentCells = function(cell) {
-  if (cell !== undefined) {
-    this.board.getAdjacentCells(cell).forEach(function (adjacent) {
-      adjacent.isSelected = !adjacent.isSelected;
-    });
     this.draw();
   }
 }
