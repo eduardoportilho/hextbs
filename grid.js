@@ -129,7 +129,7 @@ Grid.prototype.setEmptyCells = function(board) {
   for (var row = 0; row < this.dimension ; row++) {
     for (var col = 0; col < this.dimension ; col++) {
       var cell = this.cells[row][col];
-      cell.isEmpty = board[row][col].isEmpty;
+      cell.isEmpty = board.getCell({row: row, col: col}).isEmpty;
     }
   }
 };

@@ -6,9 +6,13 @@ function BoardGenerator(dimension) {
   this.minEmpty = Math.round(this.maxEmpty * 0.7);
 }
 
+BoardGenerator.prototype.setBoard = function(board) {
+  this.board = board;
+};
+
 BoardGenerator.prototype.generateBoard = function() {
   this.emptyCount = 0;
-  this.board = _generateEmptyBoard(this.dimension);
+  this.board = new Board(this.dimension);
   this.removeSomeCells();
   return this.board;
 }
@@ -46,52 +50,25 @@ BoardGenerator.prototype.getRandomCell = function() {
   while (true) {
     var row = _getRandomInt(0, this.dimension);
     var col = _getRandomInt(0, this.dimension);
-    var cell = this.board[row][col];
+    var cell = this.board.getCell({row: row, col: col});
     if (!cell.isEmpty) {
       return cell;
     }
   }
 };
 
-BoardGenerator.prototype.getAdjacentCells = function(cell) {
-  var adjacentCoords;
-  var r = cell.row, c = cell.col;
-  if (r % 2 === 0) {
-    adjacentCoords = [
-      {row: r-1, col: c-1},
-      {row: r, col: c-1},
-      {row: r+1, col: c},
-      {row: r, col: c+1},
-      {row: r-1, col: c+1},
-      {row: r-1, col: c},
-    ];
-  } else {
-    adjacentCoords = [
-      {row: r, col: c-1},
-      {row: r+1, col: c-1},
-      {row: r+1, col: c},
-      {row: r+1, col: c+1},
-      {row: r, col: c+1},
-      {row: r-1, col: c},
-    ];
-  }
+BoardGenerator.prototype.removeCell = function(coord) {
+  this.board.clearCell(coord);
+  this.emptyCount++;
+};
 
-  // remove out of grid and already removed
-  adjacentCoords = adjacentCoords.filter(function(coord) {
-    return coord.row >= 0 &&
-      coord.col >= 0 &&
-      coord.row < this.dimension &&
-      coord.col < this.dimension &&
-      !this.board[coord.row][coord.col].isEmpty;
-  }.bind(this));
-
-  return adjacentCoords.map(function (coord) {
-    return this.board[coord.row][coord.col];
-  }.bind(this));
-}
+BoardGenerator.prototype.undoRemoveCell = function(coord) {
+  this.board.unclearCell(coord);
+  this.emptyCount--;
+};
 
 BoardGenerator.prototype.getRandomAdjacentCell = function(cell) {
-  var adjacentCells = this.getAdjacentCells(cell);
+  var adjacentCells = this.board.getAdjacentCells(cell);
   if (adjacentCells.length === 0) {
     return undefined;
   }
@@ -99,68 +76,33 @@ BoardGenerator.prototype.getRandomAdjacentCell = function(cell) {
   return adjacentCells[index];
 };
 
-BoardGenerator.prototype.removeCell = function(coord) {
-  this.board[coord.row][coord.col].isEmpty = true;
-  this.emptyCount++;
-};
-
-BoardGenerator.prototype.undoRemoveCell = function(coord) {
-  this.board[coord.row][coord.col].isEmpty = false;
-  this.emptyCount--;
-};
-
 BoardGenerator.prototype.isBoardConnected = function() {
   //clear connected flag and find first cell
-  var firstCell = undefined;
-  for (var row = 0; row < this.dimension ; row++) {
-    for (var col = 0; col < this.dimension ; col++) {
-      var cell = this.board[row][col];
-      if (!firstCell && !cell.isEmpty) {
-        firstCell = cell;
-      }
-      cell.isConnected = false;
-    }
-  }
+  var firstCell = this.board.getFirstNonEmptyCell();
+  this.board.getAllCells().forEach(function (cell) {
+    cell.isConnected = false;
+  });
 
   // set connected flag
   this.connectCellAndAdjcent(firstCell);
 
   // check for unconected cells
-  for (var row = 0; row < this.dimension ; row++) {
-    for (var col = 0; col < this.dimension ; col++) {
-      var cell = this.board[row][col];
-      if (!cell.isConnected && !cell.isEmpty) {
-        return false;
-      }
-    }
-  }
-  return true;
+  var unconnectedIndex = this.board.getNonEmptyCells().findIndex(function (cell) {
+    return !cell.isConnected;
+  });
+
+  return unconnectedIndex < 0;
 }
 
 BoardGenerator.prototype.connectCellAndAdjcent = function(cell) {
   cell.isConnected = true;
-  var adjacentCells = this.getAdjacentCells(cell);
-  for (var i = 0; i < adjacentCells.length ; i++) {
-      var adjacent = adjacentCells[i];
-      if (!adjacent.isConnected && !adjacent.isEmpty) {
-        this.connectCellAndAdjcent(adjacent);
-      }
-  }
-}
+  var adjacentCells = this.board.getAdjacentCells(cell);
 
-function _generateEmptyBoard(dimension) {
-  var board = {};
-  for (var row = 0; row < dimension ; row++) {
-    board[row] = {};
-    for (var col = 0; col < dimension ; col++) {
-      board[row][col] = {
-        row: row,
-        col: col,
-        isEmpty: false
-      };
-    }
-  }
-  return board;
+  adjacentCells.filter(function(adjacent) {
+    return !adjacent.isConnected && !adjacent.isEmpty;
+  }).forEach(function (adjacent) {
+    this.connectCellAndAdjcent(adjacent);
+  }.bind(this));
 }
 
 function _yesOrNo(yesChance) {
