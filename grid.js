@@ -14,51 +14,45 @@ function Grid(board) {
 Grid.FIRST_CELL_CENTER_POSITION =  {x: 60, y: 60};
 
 Grid.prototype.buildCells = function() {
-  for (var row = 0; row < this.dimension ; row++) {
-    for (var col = 0; col < this.dimension ; col++) {
-      var cell = this.board.getCell({row: row, col: col});
-      if (!cell.isEmpty) {
-        var centerPosition = _getHexCenterPosition(
-          row,
-          col,
-          Hex.HEX_EDGE_SIZE,
-          Grid.FIRST_CELL_CENTER_POSITION
-        );
-        var hex = new Hex(row, col, centerPosition);
-        cell.hex = hex;  
-      }
-    }
-  }
+  this.board.getNonEmptyCells().forEach(function (cell) {
+    var hexCenter = Hex.getHexCenterPosition(
+      cell.row,
+      cell.col,
+      Hex.HEX_EDGE_SIZE,
+      Grid.FIRST_CELL_CENTER_POSITION
+    );
+    var path = Hex.buidHexPath(hexCenter, Hex.HEX_EDGE_SIZE);
+    cell.hex = {
+      path: path,
+      center: hexCenter
+    };
+  });
 }
 
 Grid.prototype.draw = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  for (var row = 0; row < this.dimension ; row++) {
-    for (var col = 0; col < this.dimension ; col++) {
-      var cell = this.board.getCell({row: row, col: col});
-      if (!cell.isEmpty) {
-        var hex = cell.hex;
-        this.setHexBackgroundStyle(hex);
-        this.ctx.fill(hex.path);
-        this.ctx.stroke(hex.path);
 
-        this.setHexTextStyle();
-        this.ctx.fillText(hex.population, hex.centerPosition.x, hex.centerPosition.y);
-      }
-    }
-  }
+  this.board.getNonEmptyCells().forEach(function (cell) {
+    var hex = cell.hex;
+    this.setHexBackgroundStyle(cell);
+    this.ctx.fill(cell.hex.path);
+    this.ctx.stroke(cell.hex.path);
+
+    this.setHexTextStyle();
+    this.ctx.fillText(cell.population, cell.hex.center.x, cell.hex.center.y);
+  }.bind(this));
 }
 
 /**
  * Change the context style for painting the hex background.
  * @param {Hex} hex
  */
-Grid.prototype.setHexBackgroundStyle = function(hex) {
-  if (hex.isSelected) {
+Grid.prototype.setHexBackgroundStyle = function(cell) {
+  if (cell.isSelected) {
     this.ctx.fillStyle = 'red';
     this.ctx.strokeStyle = 'blue';
   }
-  else if (_isSameCell(hex, this.highlightedCell)) {
+  else if (_isSameCoordinates(cell, this.highlightedCell)) {
     this.ctx.fillStyle = 'blue';
     this.ctx.strokeStyle = 'orange';
   } else {
@@ -87,7 +81,7 @@ Grid.prototype.onMouseMove = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
-  if (!_isSameCell(cellOverMouse, this.highlightedCell)) {
+  if (!_isSameCoordinates(cellOverMouse, this.highlightedCell)) {
     this.highlightedCell = cellOverMouse;
     this.draw();
   }
@@ -104,7 +98,7 @@ Grid.prototype.onClick = function(e) {
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
   if (cellOverMouse !== undefined) {
-    cellOverMouse.hex.isSelected = !cellOverMouse.hex.isSelected;
+    cellOverMouse.isSelected = !cellOverMouse.isSelected;
     this.draw();
   }
 }
@@ -116,52 +110,11 @@ Grid.prototype.onClick = function(e) {
  * @return {Coordinate} Hex coordinate or undefined.
  */
 Grid.prototype.getCellOnPoint = function(point) {
-  for (var row = 0; row < this.dimension ; row++) {
-    for (var col = 0; col < this.dimension ; col++) {
-      var cell = this.board.getCell({row: row, col: col});
-      if (!cell.isEmpty &&
-        this.ctx.isPointInPath(cell.hex.path, point.x, point.y)) {
-        return cell;
-      }
-    }
-  }
-  return undefined;
+  return this.board.getNonEmptyCells().find(function (cell) {
+    return this.ctx.isPointInPath(cell.hex.path, point.x, point.y);
+  }.bind(this));
 }
 
-// Grid.prototype.setEmptyCells = function(board) {
-//   for (var row = 0; row < this.dimension ; row++) {
-//     for (var col = 0; col < this.dimension ; col++) {
-//       var cell = this.cells[row][col];
-//       cell.isEmpty = board.getCell({row: row, col: col}).isEmpty;
-//     }
-//   }
-// };
-
-/**
- * Get the position of the center of the hex.
- * @param  {number} row - Hex row index.
- * @param  {number} col - Hex column index.
- * @param  {number} edgeSize - Size of the hex edge.
- * @param  {Point} origin - [X, Y] position of the center of the first (0,0) hex.
- * @return {Point} [X, Y] position of the center of the hex at [row, col].
- */
-function _getHexCenterPosition(row, col, edgeSize, origin) {
-  origin = origin;
-  edgeSize = edgeSize || 50;
-  var hexHeight = edgeSize * 2;
-  var hexWidth = Math.sqrt(3)/2 * hexHeight;
-  
-  var x = col * hexWidth;
-  var y = row * (3 * hexHeight / 4);
-  if (row % 2 !== 0) {
-    x += hexWidth / 2;
-  }
-
-  return {
-    x: origin.x + x,
-    y: origin.y + y,
-  }
-}
 
 /**
  * Check if 2 cells are the same looking to their coordinates.
@@ -169,7 +122,7 @@ function _getHexCenterPosition(row, col, edgeSize, origin) {
  * @param  {Hex} cell2
  * @return {Boolean}
  */
-function _isSameCell(cell1, cell2) {
+function _isSameCoordinates(cell1, cell2) {
   var row1 = cell1 ? cell1.row : undefined,
       row2 = cell2 ? cell2.row : undefined,
       col1 = cell1 ? cell1.col : undefined,

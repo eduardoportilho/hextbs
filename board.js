@@ -14,6 +14,7 @@ Board.prototype._init = function() {
       var cell = {
         row: row,
         col: col,
+        population: 0,
         isEmpty: false
       };
       this.cells[row][col] = cell;
