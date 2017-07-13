@@ -59,7 +59,7 @@ BoardGenerator.prototype.getRandomCells = function(count) {
   var nonEmpty = this.board.getNonEmptyCells();
 
   while (cells.length < count && nonEmpty.length > 0) {
-    var index = Random.getRandomInt(0, nonEmpty.length);
+    var index = Random.getRandomIntExclusive(0, nonEmpty.length);
     cells.push(nonEmpty[index]);
     nonEmpty.splice(index, 1);
   }
@@ -81,7 +81,7 @@ BoardGenerator.prototype.getRandomAdjacentCell = function(cell) {
   if (adjacentCells.length === 0) {
     return undefined;
   }
-  var index = Random.getRandomInt(0, adjacentCells.length);
+  var index = Random.getRandomIntExclusive(0, adjacentCells.length);
   return adjacentCells[index];
 };
 

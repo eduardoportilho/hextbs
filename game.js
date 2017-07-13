@@ -9,9 +9,27 @@ function Game(gridDimension) {
 Game.PLAYER_ID = 0;
 
 Game.prototype.init = function() {
+  document.getElementById('advance').onclick = this.onAdvanceTurn.bind(this);
+  document.onkeydown = function(e) {
+  if (e.keyCode === 32) {
+    this.onAdvanceTurn();
+    return e.preventDefault();
+  }
+}.bind(this);
+
+
   var boardGenerator = new BoardGenerator(this.gridDimension)
   this.board = boardGenerator.generateBoard(5);
   this.grid = new Grid(this.board, this);
+  this.grid.draw();
+};
+
+Game.prototype.onAdvanceTurn = function() {
+  this.board.getPlayerCells().forEach(function(cell) {
+    var max = Math.min(cell.population, 3);
+    var growth = Random.getRandomIntInclusive(0, max);
+    cell.population += growth;
+  });
   this.grid.draw();
 };
 

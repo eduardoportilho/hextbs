@@ -44,6 +44,12 @@ Board.prototype.getNonEmptyCells = function() {
   });
 };
 
+Board.prototype.getPlayerCells = function() {
+  return this.cellArray.filter(function(cell) {
+    return !cell.isEmpty && cell.player != undefined;
+  });
+};
+
 Board.prototype.getAllCells = function() {
   return this.cellArray;
 };
