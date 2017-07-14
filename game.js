@@ -71,54 +71,22 @@ Game.prototype.attack = function(targetCell) {
         adjacent.population > 1;
     });
 
-  var defendingPopulation = targetCell.population;
   for (var i = 0 ; i < attackingCells.length ; i++) {
     var attackerCell = attackingCells[i];
     var attackingPopulation = attackerCell.population - 1;
-    var result = this.simulateRiskAttack(attackingPopulation, defendingPopulation);
+    var defendingPopulation = targetCell.population;
+    var result = Random.simulateRiskAttack(attackingPopulation, defendingPopulation);
 
-    attackingPopulation -= result.attackerKills;
+    CellMovement.updatePopulationAfterAttack(attackerCell, targetCell, result);
     if (result.attackWin) {
-      attackerCell.population = 1;
-      targetCell.population = attackingPopulation;
-      targetCell.player = attackerId;
       break;
-    } else {
-      defendingPopulation -= result.defenderKills;
-      attackerCell.population = attackingPopulation + 1;
-      targetCell.population = defendingPopulation;
     }
   }
 };
 
 /**
- * Simulate attack using risk logic: each atacker-defesor pair generates a dice roll and 
- * only one will survive. The attack is successfull if all defensors die.
- * @param  {number} attackingPopulation
- * @param  {number} defendingPopulation
- * @return {Object} result - Result object.
- *         {number} result.attackerKills - How many attacker died?
- *         {number} result.defenderKills - How many defensors died?
- *         {boolean} result.attackWin - Attack successfull?
- */
-Game.prototype.simulateRiskAttack = function(attackingPopulation, defendingPopulation) {
-  var attacks = Math.min(attackingPopulation, defendingPopulation);
-  var attackerKills = 0, defenderKills = 0;
-  while (attacks-- > 0) {
-    if (Random.yesOrNo()) {
-      defenderKills++;
-    } else {
-      attackerKills++;
-    }
-  }
-  return {
-    attackerKills: attackerKills,
-    defenderKills: defenderKills,
-    attackWin: defenderKills === defendingPopulation
-  }
-}
-
-/**
+ * TODO: refator - find a better name.
+ * 
  * Subtract half of the population of all player cells adjacent
  * to target and return the total subtracted.
  * @param  {Cell} targetCell - Destination cell.

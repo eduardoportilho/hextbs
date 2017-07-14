@@ -31,3 +31,21 @@ NpcActionResolvers.stay = function(possibleActions) {
     stayAction.origin.noAction = true;
   }
 };
+
+/**
+ * Attack without looking at the chances.
+ */
+NpcActionResolvers.kamikazeAttack = function(possibleActions) {
+  var attackActions = possibleActions
+    .filter(function(a) {return a.type === 'attack';})
+    .sort(function(a1, a2) {return a2.chances - a1.chances;});
+  if (!attackActions.length) {
+    return;
+  }
+  var origin = attackActions[0].origin;
+  var target = attackActions[0].target;
+  var playerId = origin.player;
+
+  var attackResult = Random.simulateRiskAttack(origin.population, target.population);
+  CellMovement.updatePopulationAfterAttack(origin, target, attackResult);
+};

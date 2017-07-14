@@ -4,6 +4,7 @@ function Npc(id, board) {
   this.actionResolvers = [
     NpcActionResolvers.spreadMove,
     NpcActionResolvers.stay,
+    NpcActionResolvers.kamikazeAttack
   ];
 }
 
@@ -58,7 +59,8 @@ Npc.prototype.getPossibleActionsOnCell = function(originCell) {
       target: enemyCell,
       attackingPopulation: originCell.population,
       defendingPopulation: enemyCell.population,
-      chances: originCell.population - enemyCell.population,
+      // add 50 to keep it positive
+      chances: 50 +  originCell.population - enemyCell.population,
     });
   });
   return possibleActions;
