@@ -1,5 +1,5 @@
 /**
- * Knows how NPCs plays.
+ * Knows how to play as a NPC.
  */
 
 function Npc(id, board) {
@@ -8,7 +8,8 @@ function Npc(id, board) {
   this.actionResolvers = [
     NpcActionResolvers.spreadMove,
     NpcActionResolvers.stay,
-    NpcActionResolvers.kamikazeAttack
+    NpcActionResolvers.kamikazeAttack,
+    NpcActionResolvers.attackIfStronger
   ];
 }
 
@@ -18,6 +19,7 @@ Npc.prototype.playTurn = function() {
   var resolvers = this.actionResolvers;
 
   var possibleActions = this.getPossibleActions();
+  // TODO Here the magic should happen: given the possible actions and the resolvers, the NPC should decide what to do.
   while(possibleActions.length) {
     resolvers = Random.shuffle(resolvers);
     resolvers.forEach(function(actionResolverFn) {
@@ -64,7 +66,8 @@ Npc.prototype.getPossibleActionsOnCell = function(originCell) {
       attackingPopulation: originCell.population,
       defendingPopulation: enemyCell.population,
       // add 50 to keep it positive
-      chances: 50 +  originCell.population - enemyCell.population,
+      positiveChances: 50 +  originCell.population - enemyCell.population,
+      chances: originCell.population - enemyCell.population,
     });
   });
   return possibleActions;

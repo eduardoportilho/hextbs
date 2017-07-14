@@ -42,7 +42,25 @@ NpcActionResolvers.stay = function(possibleActions) {
 NpcActionResolvers.kamikazeAttack = function(possibleActions) {
   var attackActions = possibleActions
     .filter(function(a) {return a.type === 'attack';})
-    .sort(function(a1, a2) {return a2.chances - a1.chances;});
+    .sort(function(a1, a2) {return a2.positiveChances - a1.positiveChances;});
+  if (!attackActions.length) {
+    return;
+  }
+  var origin = attackActions[0].origin;
+  var target = attackActions[0].target;
+  var playerId = origin.player;
+
+  var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
+  Attack.updatePopulationAfterAttack(origin, target, attackResult);
+};
+
+/**
+ * Attack if the chances are good.
+ */
+NpcActionResolvers.attackIfStronger = function(possibleActions) {
+  var attackActions = possibleActions
+    .filter(function(a) {return a.type === 'attack' && a.chances > 0; })
+    .sort(function(a1, a2) {return a2.positiveChances - a1.positiveChances;});
   if (!attackActions.length) {
     return;
   }
