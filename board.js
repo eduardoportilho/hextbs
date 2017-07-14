@@ -18,6 +18,7 @@ Board.prototype._init = function() {
       var cell = {
         row: row,
         col: col,
+        population: 0,
         isEmpty: false
       };
       this.cells[row][col] = cell;
@@ -44,9 +45,15 @@ Board.prototype.getNonEmptyCells = function() {
   });
 };
 
-Board.prototype.getPlayerCells = function() {
+Board.prototype.getOcuppiedCells = function() {
   return this.cellArray.filter(function(cell) {
-    return !cell.isEmpty && cell.player != undefined;
+    return !cell.isEmpty && cell.player !== undefined;
+  });
+};
+
+Board.prototype.getPlayerCells = function(playerId) {
+  return this.cellArray.filter(function(cell) {
+    return !cell.isEmpty && cell.player === playerId;
   });
 };
 

@@ -5,6 +5,7 @@
 function Game(gridDimension, playerCount) {
   this.gridDimension = gridDimension;
   this.playerCount = playerCount;
+  this.players = [];
 }
 
 Game.PLAYER_ID = 0;
@@ -12,12 +13,17 @@ Game.PLAYER_ID = 0;
 Game.prototype.init = function() {
   var boardGenerator = new BoardGenerator(this.gridDimension, this.playerCount)
   this.board = boardGenerator.generateBoard();
+  this.players = [];
+  for (var player = 1; player < this.playerCount; player++) {
+    this.players.push(new Npc(player, this.board));
+  }
+
   this.grid = new Grid(this.board, this);
   this.grid.draw();
 };
 
 Game.prototype.grow = function() {
-  this.board.getPlayerCells().forEach(function(cell) {
+  this.board.getOcuppiedCells().forEach(function(cell) {
     var max = Math.min(cell.population, 3);
     var growth = Random.getRandomIntInclusive(0, max);
     cell.population += growth;
@@ -25,6 +31,7 @@ Game.prototype.grow = function() {
 };
 
 Game.prototype.onAdvanceTurn = function() {
+  this.players.forEach(function (player) { player.play.call(player); });
   this.grow();
   this.grid.draw();
 };

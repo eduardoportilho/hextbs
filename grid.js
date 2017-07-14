@@ -59,7 +59,7 @@ Grid.prototype.draw = function() {
     this.ctx.fill(cell.hex.path);
     this.ctx.stroke(cell.hex.path);
 
-    if (cell.population !== undefined) {
+    if (cell.population > 0) {
       this.setHexTextStyle();
       var label = cell.population;
       this.ctx.fillText(label, cell.hex.center.x, cell.hex.center.y); 
