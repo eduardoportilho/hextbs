@@ -10,10 +10,12 @@ function Npc(id, board) {
 Npc.prototype.playTurn = function() {
   //remove noAction flags
   this.board.getPlayerCells(this.id).forEach(function (c) {c.noAction = false;});
+  var resolvers = this.actionResolvers;
 
   var possibleActions = this.getPossibleActions();
   while(possibleActions.length) {
-    this.actionResolvers.forEach(function(actionResolverFn) {
+    resolvers = Random.shuffle(resolvers);
+    resolvers.forEach(function(actionResolverFn) {
       actionResolverFn(possibleActions);
       possibleActions = this.getPossibleActions();
     }.bind(this));
