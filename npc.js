@@ -1,3 +1,7 @@
+/**
+ * Knows how NPCs plays.
+ */
+
 function Npc(id, board) {
   this.id = id;
   this.board = board;

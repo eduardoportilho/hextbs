@@ -1,5 +1,5 @@
 /**
- * Knows about the state of the board
+ * Knows about the state of the board.
  */
 
 function Board(dimension) {
@@ -19,7 +19,8 @@ Board.prototype._init = function() {
         row: row,
         col: col,
         population: 0,
-        isEmpty: false
+        isEmpty: false,
+        board: this
       };
       this.cells[row][col] = cell;
       this.cellArray.push(cell);
@@ -72,21 +73,21 @@ Board.prototype.getAdjacentCells = function(cell) {
   var r = cell.row, c = cell.col;
   if (r % 2 === 0) {
     adjacentCoords = [
-      {row: r-1, col: c-1},
-      {row: r-1, col: c},
-      {row: r,   col: c+1},
-      {row: r+1, col: c},
-      {row: r+1, col: c-1},
-      {row: r,   col: c-1},
+      {row: r-1, col: c-1 },
+      {row: r-1, col: c   },
+      {row: r,   col: c+1 },
+      {row: r+1, col: c   },
+      {row: r+1, col: c-1 },
+      {row: r,   col: c-1 },
     ];
   } else {
     adjacentCoords = [
-      {row: r-1, col: c},
-      {row: r-1, col: c+1},
-      {row: r,   col: c+1},
-      {row: r+1, col: c+1},
-      {row: r+1, col: c},
-      {row: r,   col: c-1},
+      {row: r-1, col: c   },
+      {row: r-1, col: c+1 },
+      {row: r,   col: c+1 },
+      {row: r+1, col: c+1 },
+      {row: r+1, col: c   },
+      {row: r,   col: c-1 },
     ];
   }
 

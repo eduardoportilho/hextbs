@@ -35,30 +35,3 @@ Random.shuffle = function(array) {
 
   return array;
 };
-
-/**
- * Simulate attack using risk logic: each atacker-defesor pair generates a dice roll and 
- * only one will survive. The attack is successfull if all defensors die.
- * @param  {number} attackingPopulation
- * @param  {number} defendingPopulation
- * @return {Object} result - Result object.
- *         {number} result.attackerKills - How many attacker died?
- *         {number} result.defenderKills - How many defensors died?
- *         {boolean} result.attackWin - Attack successfull?
- */
-Random.simulateRiskAttack = function(attackingPopulation, defendingPopulation) {
-  var attacks = Math.min(attackingPopulation, defendingPopulation);
-  var attackerKills = 0, defenderKills = 0;
-  while (attacks-- > 0) {
-    if (Random.yesOrNo()) {
-      defenderKills++;
-    } else {
-      attackerKills++;
-    }
-  }
-  return {
-    attackerKills: attackerKills,
-    defenderKills: defenderKills,
-    attackWin: defenderKills === defendingPopulation
-  }
-};

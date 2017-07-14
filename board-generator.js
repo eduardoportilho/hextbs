@@ -105,6 +105,9 @@ BoardGenerator.prototype.isBoardConnected = function() {
 }
 
 BoardGenerator.prototype.connectCellAndAdjcent = function(cell) {
+  if (cell.isConnected) {
+    return;
+  }
   cell.isConnected = true;
   var adjacentCells = this.board.getAdjacentCells(cell);
 

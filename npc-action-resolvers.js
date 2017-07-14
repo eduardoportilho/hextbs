@@ -1,3 +1,7 @@
+/**
+ * Define the ways that a NPC can act given a list of possible actions.
+ */
+
 function NpcActionResolvers() {}
 
 NpcActionResolvers.spreadMove = function(possibleActions) {
@@ -46,6 +50,6 @@ NpcActionResolvers.kamikazeAttack = function(possibleActions) {
   var target = attackActions[0].target;
   var playerId = origin.player;
 
-  var attackResult = Random.simulateRiskAttack(origin.population, target.population);
-  CellMovement.updatePopulationAfterAttack(origin, target, attackResult);
+  var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
+  Attack.updatePopulationAfterAttack(origin, target, attackResult);
 };
