@@ -9,6 +9,7 @@ function Game(gridDimension, playerCount) {
 }
 
 Game.PLAYER_ID = 0;
+Game.MAX_POPULATION = 10;
 
 Game.prototype.init = function() {
   var boardGenerator = new BoardGenerator(this.gridDimension, this.playerCount)
@@ -26,12 +27,13 @@ Game.prototype.grow = function() {
   this.board.getOcuppiedCells().forEach(function(cell) {
     var max = Math.min(cell.population, 3);
     var growth = Random.getRandomIntInclusive(0, max);
-    cell.population += growth;
+    var newPopulation = Math.min(cell.population + growth, Game.MAX_POPULATION);
+    cell.population = newPopulation;
   });
 };
 
 Game.prototype.onAdvanceTurn = function() {
-  this.players.forEach(function (player) { player.play.call(player); });
+  this.players.forEach(function (player) { player.playTurn.call(player); });
   this.grow();
   this.grid.draw();
 };
