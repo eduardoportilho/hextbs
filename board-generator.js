@@ -4,16 +4,18 @@
 
 var CONTINUE_TRACK_CHANCE = 0.7;
 
-function BoardGenerator(dimension, playerCount) {
+function BoardGenerator(rowCount, colCount, playerCount) {
   this.playerCount = playerCount;
-  this.dimension = dimension;
-  this.maxEmpty = Math.round((this.dimension * this.dimension) / 2);
+  this.rowCount = rowCount;
+  this.colCount = colCount;
+  var maxDimension = Math.max(rowCount, colCount);
+  this.maxEmpty = Math.round((maxDimension * maxDimension) / 2);
   this.minEmpty = Math.round(this.maxEmpty * 0.7);
 }
 
 BoardGenerator.prototype.generateBoard = function() {
   this.emptyCount = 0;
-  this.board = new Board(this.dimension);
+  this.board = new Board(this.rowCount, this.colCount);
   this.removeSomeCells();
 
   var playerCells = this.getRandomCells(this.playerCount);

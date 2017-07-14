@@ -60,3 +60,12 @@ HexPath.getHexCenterPosition = function(row, col, edgeSize, origin) {
     y: origin.y + y,
   }
 }
+
+HexPath.getHexDimensions = function() {
+  var height = HexPath.HEX_EDGE_SIZE * 2;
+  var width = Math.sqrt(3)/2 * height;
+  return {
+    height: height,
+    width: width
+  };  
+};

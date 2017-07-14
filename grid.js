@@ -5,7 +5,6 @@
 function Grid(board, game) {
   this.board = board;
   this.game = game;
-  this.dimension = board.dimension;
   this.highlightedCell = undefined;
 
   this.canvas = document.getElementById('game');
@@ -25,7 +24,6 @@ function Grid(board, game) {
   this.buildCells();
 }
 
-Grid.FIRST_CELL_CENTER_POSITION =  {x: 60, y: 60};
 Grid.PLAYER_COLORS = [
   'red',
   'yellow',
@@ -35,12 +33,14 @@ Grid.PLAYER_COLORS = [
 ];
 
 Grid.prototype.buildCells = function() {
+  var hexDimensions = HexPath.getHexDimensions();
+  var firstCellCenter = {x: Math.ceil(hexDimensions.width / 2), y: Math.ceil(hexDimensions.height / 2)};
   this.board.getNonEmptyCells().forEach(function (cell) {
     var hexCenter = HexPath.getHexCenterPosition(
       cell.row,
       cell.col,
       HexPath.HEX_EDGE_SIZE,
-      Grid.FIRST_CELL_CENTER_POSITION
+      firstCellCenter
     );
     var path = HexPath.buidHexPath(hexCenter, HexPath.HEX_EDGE_SIZE);
     cell.hex = {

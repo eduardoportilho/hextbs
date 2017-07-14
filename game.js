@@ -2,8 +2,9 @@
  * Knows about initial game setup and player actions.
  */
 
-function Game(gridDimension, playerCount) {
-  this.gridDimension = gridDimension;
+function Game(rowCount, colCount, playerCount, viewPort) {
+  this.rowCount = rowCount;
+  this.colCount = colCount;
   this.playerCount = playerCount;
   this.npcs = [];
   this.player = undefined;
@@ -13,7 +14,7 @@ Game.PLAYER_ID = 0;
 Game.MAX_POPULATION = 10;
 
 Game.prototype.init = function() {
-  var boardGenerator = new BoardGenerator(this.gridDimension, this.playerCount)
+  var boardGenerator = new BoardGenerator(this.rowCount, this.colCount, this.playerCount)
   this.board = boardGenerator.generateBoard();
   this.player = new Player(Game.PLAYER_ID);
   this.npcs = [];
@@ -56,5 +57,30 @@ Game.prototype.onPlayerClick = function(targetCell) {
   this.grid.draw();
 };
 
-var game = new Game(10, 5);
+var viewportWidth = Math.min(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
+var viewportHeight = Math.min(document.documentElement.clientHeight, window.innerHeight || 0) - 50;
+var viewport = {width: viewportWidth, height: viewportHeight};
+
+
+var canvas = document.getElementById('game');
+canvas.width = viewportWidth;
+canvas.height = viewportHeight;
+
+var container = document.querySelector('.container');
+
+var hexDimensions = HexPath.getHexDimensions();
+var firstHexHeigth = hexDimensions.height;
+var nthHexHeigth = Math.ceil(hexDimensions.height * 3 / 4);
+
+
+var rowCount = Math.floor((viewportHeight - firstHexHeigth) / nthHexHeigth) + 1;
+var colCount = Math.floor(viewportWidth / hexDimensions.width);
+colCount = Math.min(colCount, rowCount);
+
+var canvasWidth = (colCount + 1) * hexDimensions.width;
+canvas.width = canvasWidth;
+container.setAttribute("style", "width: " + canvasWidth + "px;");
+
+
+var game = new Game(rowCount, colCount, 5, viewport);
 game.init();

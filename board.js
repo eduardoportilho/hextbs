@@ -2,8 +2,9 @@
  * Knows about the state of the board.
  */
 
-function Board(dimension) {
-  this.dimension = dimension;
+function Board(rowCount, colCount) {
+  this.rowCount = rowCount;
+  this.colCount = colCount;
   this.cells = {};
   this.cellArray = [];
   this._init();
@@ -12,9 +13,9 @@ function Board(dimension) {
 Board.prototype._init = function() {
   this.cells = {};
   this.cellArray = [];
-  for (var row = 0; row < this.dimension ; row++) {
+  for (var row = 0; row < this.rowCount ; row++) {
     this.cells[row] = {};
-    for (var col = 0; col < this.dimension ; col++) {
+    for (var col = 0; col < this.colCount ; col++) {
       var cell = {
         row: row,
         col: col,
@@ -95,8 +96,8 @@ Board.prototype.getAdjacentCells = function(cell) {
   adjacentCoords = adjacentCoords.filter(function(coord) {
     return coord.row >= 0 &&
       coord.col >= 0 &&
-      coord.row < this.dimension &&
-      coord.col < this.dimension &&
+      coord.row < this.rowCount &&
+      coord.col < this.colCount &&
       !this.cells[coord.row][coord.col].isEmpty;
   }.bind(this));
 
