@@ -61,26 +61,17 @@ var viewportWidth = Math.min(document.documentElement.clientWidth, window.innerW
 var viewportHeight = Math.min(document.documentElement.clientHeight, window.innerHeight || 0) - 50;
 var viewport = {width: viewportWidth, height: viewportHeight};
 
-
-var canvas = document.getElementById('game');
-canvas.width = viewportWidth;
-canvas.height = viewportHeight;
-
-var container = document.querySelector('.container');
+var gridSize = HexPath.calculateGridSize(viewport);
 
 var hexDimensions = HexPath.getHexDimensions();
-var firstHexHeigth = hexDimensions.height;
-var nthHexHeigth = Math.ceil(hexDimensions.height * 3 / 4);
+var canvasWidth = (gridSize.colCount + 1) * hexDimensions.width;
 
-
-var rowCount = Math.floor((viewportHeight - firstHexHeigth) / nthHexHeigth) + 1;
-var colCount = Math.floor(viewportWidth / hexDimensions.width);
-colCount = Math.min(colCount, rowCount);
-
-var canvasWidth = (colCount + 1) * hexDimensions.width;
+var canvas = document.getElementById('game');
+canvas.height = viewportHeight;
 canvas.width = canvasWidth;
+
+var container = document.querySelector('.container');
 container.setAttribute("style", "width: " + canvasWidth + "px;");
 
-
-var game = new Game(rowCount, colCount, 5, viewport);
+var game = new Game(gridSize.rowCount, gridSize.colCount, 5, viewport);
 game.init();

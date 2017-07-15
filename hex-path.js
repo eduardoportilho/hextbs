@@ -69,3 +69,17 @@ HexPath.getHexDimensions = function() {
     width: width
   };  
 };
+
+HexPath.calculateGridSize = function(viewportSize) {
+  var hexDimensions = HexPath.getHexDimensions();
+  var firstHexHeigth = hexDimensions.height;
+  var nthHexHeigth = Math.ceil(hexDimensions.height * 3 / 4);
+  
+  var rowCount = Math.floor((viewport.height - firstHexHeigth) / nthHexHeigth) + 1;
+  var colCount = Math.floor(viewport.width / hexDimensions.width);
+  colCount = Math.min(colCount, rowCount);
+  return {
+    rowCount: rowCount,
+    colCount: colCount,
+  }
+};
