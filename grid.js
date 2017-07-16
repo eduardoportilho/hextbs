@@ -146,6 +146,22 @@ Grid.prototype.getCellOnPoint = function(point) {
   }.bind(this));
 }
 
+Grid.calculateCanvasSize = function() {
+  var viewportWidth = Math.min(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
+  var viewportHeight = Math.min(document.documentElement.clientHeight, window.innerHeight || 0) - 50;
+  var viewportSize = {width: viewportWidth, height: viewportHeight};
+  var gridSize = HexPath.calculateGridSize(viewportSize);
+  var hexDimensions = HexPath.getHexDimensions();
+  var canvasWidth = (gridSize.colCount + 1) * hexDimensions.width;
+
+  return {
+    height: viewportHeight,
+    width: canvasWidth,
+    rowCount: gridSize.rowCount,
+    colCount: gridSize.colCount
+  };
+};
+
 
 /**
  * Check if 2 cells are the same looking to their coordinates.

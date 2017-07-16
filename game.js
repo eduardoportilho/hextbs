@@ -2,7 +2,7 @@
  * Knows about initial game setup and player actions.
  */
 
-function Game(rowCount, colCount, playerCount, viewPort) {
+function Game(rowCount, colCount, playerCount) {
   this.rowCount = rowCount;
   this.colCount = colCount;
   this.playerCount = playerCount;
@@ -57,21 +57,13 @@ Game.prototype.onPlayerClick = function(targetCell) {
   this.grid.draw();
 };
 
-var viewportWidth = Math.min(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
-var viewportHeight = Math.min(document.documentElement.clientHeight, window.innerHeight || 0) - 50;
-var viewport = {width: viewportWidth, height: viewportHeight};
-
-var gridSize = HexPath.calculateGridSize(viewport);
-
-var hexDimensions = HexPath.getHexDimensions();
-var canvasWidth = (gridSize.colCount + 1) * hexDimensions.width;
-
+var canvasSize = Grid.calculateCanvasSize();
 var canvas = document.getElementById('game');
-canvas.height = viewportHeight;
-canvas.width = canvasWidth;
+canvas.height = canvasSize.height;
+canvas.width = canvasSize.width;
 
 var container = document.querySelector('.container');
-container.setAttribute("style", "width: " + canvasWidth + "px;");
+container.setAttribute("style", "width: " + canvasSize.width + "px;");
 
-var game = new Game(gridSize.rowCount, gridSize.colCount, 5, viewport);
+var game = new Game(canvasSize.rowCount, canvasSize.colCount, 5);
 game.init();

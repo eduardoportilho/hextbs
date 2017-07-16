@@ -75,8 +75,8 @@ HexPath.calculateGridSize = function(viewportSize) {
   var firstHexHeigth = hexDimensions.height;
   var nthHexHeigth = Math.ceil(hexDimensions.height * 3 / 4);
   
-  var rowCount = Math.floor((viewport.height - firstHexHeigth) / nthHexHeigth) + 1;
-  var colCount = Math.floor(viewport.width / hexDimensions.width);
+  var rowCount = Math.floor((viewportSize.height - firstHexHeigth) / nthHexHeigth) + 1;
+  var colCount = Math.floor(viewportSize.width / hexDimensions.width);
   colCount = Math.min(colCount, rowCount);
   return {
     rowCount: rowCount,
