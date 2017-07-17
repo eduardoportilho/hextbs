@@ -2,6 +2,7 @@
 
 ## Bugs:
 * Sometimes a player cell is displayed with no population (player bg color and no label).
+* Partial border bug.
 
 ## Feats:
 * More control over actions:
@@ -9,6 +10,15 @@
     - Select target (could be player cell, to move pops)
     - Control the number of moved pops
     - Avoid multiple actions on same cell
+* Moving restriction
+* 2 players
+* Better NPC AI
 
-## Minor improvements:
+## Minor improvements, optimizations & refactors:
 * Style advance button.
+* Is possible to merge NPC and player? Some actions seems reusable.
+
+## Infra:
+* Babel + es6
+* Bundle & minify (webpack?)
+* Unit tests
