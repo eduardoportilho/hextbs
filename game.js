@@ -1,5 +1,5 @@
 /**
- * Knows about initial game setup and player actions.
+ * Initial game setup  ; player click handler ; main game events (advance, grow)
  */
 
 function Game(rowCount, colCount, playerCount) {

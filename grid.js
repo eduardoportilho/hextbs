@@ -26,11 +26,21 @@ function Grid(board, game) {
 
 Grid.PLAYER_COLORS = [
   'red',
-  'yellow',
+  'gold',
   'green',
-  'grey',
+  'chocolate',
   'cyan',
 ];
+
+Grid.CELL_STYLES = {
+  'unoccupied': {
+    'bg' : 'lightgray',
+    'border': 'white'
+  },
+  'occupied': {
+    'border': 'white'
+  }
+};
 
 Grid.prototype.buildCells = function() {
   var hexDimensions = HexPath.getHexDimensions();
@@ -72,16 +82,17 @@ Grid.prototype.draw = function() {
  * @param {Cell} cell
  */
 Grid.prototype.setHexBackgroundStyle = function(cell) {
+  this.ctx.lineWidth = 2;
   if (cell.isSelected) {
     this.ctx.fillStyle = 'red';
     this.ctx.strokeStyle = 'blue';
   }
   else if (cell.player != undefined) {
     this.ctx.fillStyle = Grid.PLAYER_COLORS[cell.player];
-    this.ctx.strokeStyle = 'blue';
+    this.ctx.strokeStyle = Grid.CELL_STYLES.occupied.border;
   } else {
-    this.ctx.fillStyle = 'orange';
-    this.ctx.strokeStyle = 'blue';
+    this.ctx.fillStyle = Grid.CELL_STYLES.unoccupied.bg;
+    this.ctx.strokeStyle = Grid.CELL_STYLES.unoccupied.border;
   }
 
   if (_isSameCoordinates(cell, this.highlightedCell)) {
