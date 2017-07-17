@@ -83,7 +83,10 @@ Grid.prototype.draw = function() {
     var hex = cell.hex;
     this.setHexBackgroundStyle(cell);
     this.ctx.fill(cell.hex.path);
-    this.ctx.stroke(cell.hex.path);
+
+    if (Board.isSameCoordinates(cell, this.selectedCell)) {
+      this.ctx.stroke(cell.hex.path);
+    }
 
     if (cell.population > 0) {
       this.setHexTextStyle();

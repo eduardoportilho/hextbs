@@ -17,6 +17,8 @@ HexPath.buidHexPath = function(center, edgeSize) {
     angleDeg, 
     angleRad;
   edgeSize = edgeSize || Hex.HEX_EDGE_SIZE;
+  // pseudo-stroke: leave some space between hexes
+  edgeSize -= 1.5;
 
   var hexPath = new Path2D();
 
