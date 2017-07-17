@@ -21,7 +21,7 @@ function Grid(board, game) {
     }
   }.bind(this);
 
-  this.buildCells();
+  this.buildCellPaths();
 }
 
 Grid.PLAYER_COLORS = [
@@ -42,7 +42,10 @@ Grid.CELL_STYLES = {
   }
 };
 
-Grid.prototype.buildCells = function() {
+/**
+ * Build each cell path and store it on the cell object.
+ */
+Grid.prototype.buildCellPaths = function() {
   var hexDimensions = HexPath.getHexDimensions();
   var firstCellCenter = {x: Math.ceil(hexDimensions.width / 2), y: Math.ceil(hexDimensions.height / 2)};
   this.board.getNonEmptyCells().forEach(function (cell) {
@@ -60,6 +63,9 @@ Grid.prototype.buildCells = function() {
   });
 }
 
+/**
+ * Redraw the whole grid.
+ */
 Grid.prototype.draw = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -157,6 +163,14 @@ Grid.prototype.getCellOnPoint = function(point) {
   }.bind(this));
 }
 
+/**
+ * Calculate the canvas size and grid dimension based on the current viewport size.
+ * @return {Object} canvasSize - Canvas size.
+ *         {number} canvasSize.height - Canvas height.
+ *         {number} canvasSize.width - Canvas width.
+ *         {number} canvasSize.rowCount - Number of rows in the grid.
+ *         {number} canvasSize.colCount - Number of columns in the grid.
+ */
 Grid.calculateCanvasSize = function() {
   var viewportWidth = Math.min(document.documentElement.clientWidth, window.innerWidth || 0) - 30;
   var viewportHeight = Math.min(document.documentElement.clientHeight, window.innerHeight || 0) - 50;
@@ -175,7 +189,7 @@ Grid.calculateCanvasSize = function() {
 
 
 /**
- * Check if 2 cells are the same looking to their coordinates.
+ * Check if 2 cells have the same coordinates.
  * @param  {Cell} cell1
  * @param  {Cell} cell2
  * @return {Boolean}
