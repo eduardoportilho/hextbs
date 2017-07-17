@@ -6,12 +6,16 @@ function Player(id) {
   this.id = id;
 }
 
-Player.prototype.moveToCell = function(originCell, targetCell, populationToMove) {
+Player.prototype.moveToCell = function(originCell, targetCell, moveAll) {
   if (originCell.player != this.id) {
     throw new Error('Trying to move from a cell that is not occupied by player!');
   }
   var availablePopulation = originCell.population - 1;
-  var movingPopulation = Math.min(populationToMove, availablePopulation);
+  var movingPopulation = availablePopulation;
+  if (movingPopulation > 1 && !moveAll) {
+    movingPopulation = 1;
+  }
+
   if (movingPopulation > 0) {
     originCell.population -= movingPopulation;
     targetCell.player = this.id;

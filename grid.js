@@ -20,6 +20,7 @@ function Grid(board, game) {
   }.bind(this);
 
   document.onclick = this.onClick.bind(this);
+  document.ondblclick = this.onDoubleClick.bind(this);
 
   document.onkeydown = function(e) {
     if (e.keyCode === 32) {
@@ -155,6 +156,15 @@ Grid.prototype.onClick = function(e) {
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
   this.game.onPlayerClick(cellOverMouse);
+}
+
+Grid.prototype.onDoubleClick = function(e) {
+  var mousePosition = {
+    x: e.clientX - e.target.offsetLeft,
+    y: e.clientY - e.target.offsetTop    
+  };
+  var cellOverMouse = this.getCellOnPoint(mousePosition);
+  this.game.onPlayerDoubleClick(cellOverMouse);
 }
 
 Grid.prototype.selectCell = function(cell) {

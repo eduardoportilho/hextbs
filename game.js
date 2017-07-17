@@ -43,7 +43,16 @@ Game.prototype.onAdvanceTurn = function() {
   this.grid.draw();
 };
 
+Game.prototype.onPlayerDoubleClick = function(clickedCell) {
+  this.resolvePlayerAction(clickedCell, true);
+};
+
 Game.prototype.onPlayerClick = function(clickedCell) {
+  this.resolvePlayerAction(clickedCell, false);
+};
+
+Game.prototype.resolvePlayerAction = function(clickedCell, moveAll) {
+  moveAll = moveAll || false;
   var isClickOnEmpty = (clickedCell === undefined);
   var isOriginSet = (this.originCell !== undefined);
   var isTargetOccupiedByPlayer = (clickedCell && clickedCell.player === Game.PLAYER_ID);
@@ -79,7 +88,7 @@ Game.prototype.onPlayerClick = function(clickedCell) {
       // TARGET is occupied by player or unoccupied
       else {
         // move 1 pop to CLICKED
-        this.player.moveToCell(this.originCell, clickedCell, 1);
+        this.player.moveToCell(this.originCell, clickedCell, moveAll);
       }
     }
     // CLICKED is NOT adjacent to ORIGIN
