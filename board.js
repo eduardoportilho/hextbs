@@ -70,6 +70,24 @@ Board.prototype.getFirstNonEmptyCell = function() {
 };
 
 Board.prototype.getAdjacentCells = function(cell) {
+  var adjacentCoords = Board.getAdjacentCoordinates(cell);
+  // remove out of grid and already removed
+  adjacentCoords = adjacentCoords.filter(function(coord) {
+    return coord.row >= 0 &&
+      coord.col >= 0 &&
+      coord.row < this.rowCount &&
+      coord.col < this.colCount &&
+      !this.cells[coord.row][coord.col].isEmpty;
+  }.bind(this));
+
+  // return actual cells
+  return adjacentCoords.map(function (coord) {
+    return this.cells[coord.row][coord.col];
+  }.bind(this));
+};
+
+
+Board.getAdjacentCoordinates = function(cell) {
   var adjacentCoords;
   var r = cell.row, c = cell.col;
   if (r % 2 === 0) {
@@ -91,18 +109,27 @@ Board.prototype.getAdjacentCells = function(cell) {
       {row: r,   col: c-1 },
     ];
   }
+  return adjacentCoords;
+}
 
-  // remove out of grid and already removed
-  adjacentCoords = adjacentCoords.filter(function(coord) {
-    return coord.row >= 0 &&
-      coord.col >= 0 &&
-      coord.row < this.rowCount &&
-      coord.col < this.colCount &&
-      !this.cells[coord.row][coord.col].isEmpty;
-  }.bind(this));
+/**
+ * Check if 2 cells have the same coordinates.
+ * @param  {Cell} cell1
+ * @param  {Cell} cell2
+ * @return {Boolean}
+ */
+Board.isSameCoordinates = function(cell1, cell2) {
+  var row1 = cell1 ? cell1.row : undefined,
+      row2 = cell2 ? cell2.row : undefined,
+      col1 = cell1 ? cell1.col : undefined,
+      col2 = cell2 ? cell2.col : undefined;
+  return row1 === row2 && col1 === col2;
+}
 
-  // return actual cells
-  return adjacentCoords.map(function (coord) {
-    return this.cells[coord.row][coord.col];
-  }.bind(this));
+Board.isAdjacent = function(cell1, cell2) {
+  var adjacentCoords = Board.getAdjacentCoordinates(cell1);
+  return adjacentCoords.findIndex(function (coord) {
+    return coord.row === cell2.row && 
+      coord.col === cell2.col;
+  }) >= 0;
 };

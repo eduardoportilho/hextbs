@@ -6,6 +6,19 @@ function Player(id) {
   this.id = id;
 }
 
+Player.prototype.moveToCell = function(originCell, targetCell, populationToMove) {
+  if (originCell.player != this.id) {
+    throw new Error('Trying to move from a cell that is not occupied by player!');
+  }
+  var availablePopulation = originCell.population - 1;
+  var movingPopulation = Math.min(populationToMove, availablePopulation);
+  if (movingPopulation > 0) {
+    originCell.population -= movingPopulation;
+    targetCell.player = this.id;
+    targetCell.population += movingPopulation;
+  }
+};
+
 Player.prototype.moveToEmptyCell = function(targetCell) {
   if (targetCell.population > 0) {
     return;
@@ -26,7 +39,14 @@ Player.prototype.moveToEmptyCell = function(targetCell) {
   }
 };
 
-Player.prototype.attack = function(targetCell) {
+Player.prototype.attack = function(originCell, targetCell) {
+    var attackingPopulation = originCell.population - 1;
+    var defendingPopulation = targetCell.population;
+    var result = Attack.simulateRiskAttack(attackingPopulation, defendingPopulation);
+    Attack.updatePopulationAfterAttack(originCell, targetCell, result);
+};
+
+Player.prototype.attackFromAllAdjacent = function(targetCell) {
   var attackerCells = this._getAdjcentPlayerCellsWithPopulation(targetCell);
   for (var i = 0 ; i < attackerCells.length ; i++) {
     var attackerCell = attackerCells[i];

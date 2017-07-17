@@ -101,7 +101,7 @@ Grid.prototype.setHexBackgroundStyle = function(cell) {
     this.ctx.strokeStyle = Grid.CELL_STYLES.unoccupied.border;
   }
 
-  if (_isSameCoordinates(cell, this.highlightedCell)) {
+  if (Board.isSameCoordinates(cell, this.highlightedCell)) {
     this.ctx.globalAlpha = 0.75;
   } else {
     this.ctx.globalAlpha = 1;
@@ -145,7 +145,7 @@ Grid.prototype.onClick = function(e) {
 }
 
 Grid.prototype._highlightCell = function(cell) {
-  if (!_isSameCoordinates(cell, this.highlightedCell)) {
+  if (!Board.isSameCoordinates(cell, this.highlightedCell)) {
     this.highlightedCell = cell;
     this.draw();
   }
@@ -186,18 +186,3 @@ Grid.calculateCanvasSize = function() {
     colCount: gridSize.colCount
   };
 };
-
-
-/**
- * Check if 2 cells have the same coordinates.
- * @param  {Cell} cell1
- * @param  {Cell} cell2
- * @return {Boolean}
- */
-function _isSameCoordinates(cell1, cell2) {
-  var row1 = cell1 ? cell1.row : undefined,
-      row2 = cell2 ? cell2.row : undefined,
-      col1 = cell1 ? cell1.col : undefined,
-      col2 = cell2 ? cell2.col : undefined;
-  return row1 === row2 && col1 === col2;
-}

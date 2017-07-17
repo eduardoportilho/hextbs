@@ -8,6 +8,7 @@ function Game(rowCount, colCount, playerCount) {
   this.playerCount = playerCount;
   this.npcs = [];
   this.player = undefined;
+  this.originCell = undefined;
 }
 
 Game.PLAYER_ID = 0;
@@ -41,18 +42,52 @@ Game.prototype.onAdvanceTurn = function() {
   this.grid.draw();
 };
 
-Game.prototype.onPlayerClick = function(targetCell) {
-  // ignore click on player cells
-  if (targetCell.player === Game.PLAYER_ID) {
-    return;
+Game.prototype.onPlayerClick = function(clickedCell) {
+  var isOriginSet = (this.originCell !== undefined);
+  var isTargetOccupiedByPlayer = (clickedCell.player === Game.PLAYER_ID);
+  var isTargetUnoccupied = (clickedCell.player === undefined);
+  var isTargetOccupiedByOtherPlayer = (!isTargetOccupiedByPlayer && !isTargetUnoccupied);
+
+  // ORIGIN is NOT set:
+  if (!isOriginSet) {
+    // CLICKED is player cell?
+    if (isTargetOccupiedByPlayer) {
+      // set ORIGIN
+      this.originCell = clickedCell;
+    }
+    // CLICKED is NOT player cell? -> ignore.
   }
-  // if target cell is not ocuppied, move
-  if (targetCell.player === undefined) {
-    this.player.moveToEmptyCell(targetCell);
-  }
-  // if target cell is ocuppied, attack
+  // ORIGIN is set:
   else {
-    this.player.attack(targetCell); 
+    var isTargetAndOriginTheSame = Board.isSameCoordinates(this.originCell, clickedCell);
+    var isTargetAndOriginAdjacent = Board.isAdjacent(this.originCell, clickedCell);
+
+    if(isTargetAndOriginTheSame) {
+      // unset ORIGIN
+      this.originCell = undefined;
+    }
+    else if (isTargetAndOriginAdjacent) {
+      if (isTargetOccupiedByOtherPlayer) {
+        // Attack
+        this.player.attack(this.originCell, clickedCell); 
+      }
+      // TARGET is occupied by player or unoccupied
+      else {
+        // move 1 pop to CLICKED
+        this.player.moveToCell(this.originCell, clickedCell, 1);
+      }
+    }
+    // CLICKED is NOT adjacent to ORIGIN
+    else {
+      if (isTargetOccupiedByPlayer) {
+        // set ORIGIN
+        this.originCell = clickedCell;
+      }
+      // TARGET is occupied by other player or unoccupied
+      else {
+        this.originCell = undefined;
+      }
+    }
   }
   this.grid.draw();
 };
