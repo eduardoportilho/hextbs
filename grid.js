@@ -12,9 +12,15 @@ function Grid(board, game) {
   this.ctx = this.canvas.getContext('2d');
 
   this.canvas.onmousemove = this.onMouseMove.bind(this);
-  this.canvas.onmousedown = this.onClick.bind(this);
 
-  document.getElementById('advance').onclick = this.game.onAdvanceTurn.bind(this.game);
+  document.getElementById('advance').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.game.onAdvanceTurn.call(this.game);
+  }.bind(this);
+
+  document.onclick = this.onClick.bind(this);
+
   document.onkeydown = function(e) {
     if (e.keyCode === 32) {
       this.game.onAdvanceTurn.call(this.game);
