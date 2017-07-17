@@ -6,6 +6,7 @@ function Grid(board, game) {
   this.board = board;
   this.game = game;
   this.highlightedCell = undefined;
+  this.selectedCell = undefined;
 
   this.canvas = document.getElementById('game');
   this.ctx = this.canvas.getContext('2d');
@@ -39,6 +40,9 @@ Grid.CELL_STYLES = {
   },
   'occupied': {
     'border': 'white'
+  },
+  'selected': {
+    'border': 'blue'
   }
 };
 
@@ -89,9 +93,11 @@ Grid.prototype.draw = function() {
  */
 Grid.prototype.setHexBackgroundStyle = function(cell) {
   this.ctx.lineWidth = 2;
-  if (cell.isSelected) {
-    this.ctx.fillStyle = 'red';
-    this.ctx.strokeStyle = 'blue';
+  this.ctx.globalAlpha = 1;
+
+  if (Board.isSameCoordinates(cell, this.selectedCell)) {
+    this.ctx.fillStyle = Grid.PLAYER_COLORS[cell.player];
+    this.ctx.strokeStyle = Grid.CELL_STYLES.selected.border;
   }
   else if (cell.player != undefined) {
     this.ctx.fillStyle = Grid.PLAYER_COLORS[cell.player];
@@ -103,8 +109,6 @@ Grid.prototype.setHexBackgroundStyle = function(cell) {
 
   if (Board.isSameCoordinates(cell, this.highlightedCell)) {
     this.ctx.globalAlpha = 0.75;
-  } else {
-    this.ctx.globalAlpha = 1;
   }
 }
 
@@ -143,6 +147,14 @@ Grid.prototype.onClick = function(e) {
   var cellOverMouse = this.getCellOnPoint(mousePosition);
   this.game.onPlayerClick(cellOverMouse);
 }
+
+Grid.prototype.selectCell = function(cell) {
+  this.selectedCell = cell;
+};
+
+Grid.prototype.unselectCell = function() {
+  this.selectedCell = undefined;
+};
 
 Grid.prototype._highlightCell = function(cell) {
   if (!Board.isSameCoordinates(cell, this.highlightedCell)) {

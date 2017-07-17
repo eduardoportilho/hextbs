@@ -43,17 +43,22 @@ Game.prototype.onAdvanceTurn = function() {
 };
 
 Game.prototype.onPlayerClick = function(clickedCell) {
+  var isClickOnEmpty = (clickedCell === undefined);
   var isOriginSet = (this.originCell !== undefined);
-  var isTargetOccupiedByPlayer = (clickedCell.player === Game.PLAYER_ID);
-  var isTargetUnoccupied = (clickedCell.player === undefined);
+  var isTargetOccupiedByPlayer = (clickedCell && clickedCell.player === Game.PLAYER_ID);
+  var isTargetUnoccupied = (clickedCell && clickedCell.player === undefined);
   var isTargetOccupiedByOtherPlayer = (!isTargetOccupiedByPlayer && !isTargetUnoccupied);
 
-  // ORIGIN is NOT set:
-  if (!isOriginSet) {
+  if (isClickOnEmpty) {
+      this.originCell = undefined;
+      this.grid.unselectCell();
+  }
+  else if (!isOriginSet) {
     // CLICKED is player cell?
     if (isTargetOccupiedByPlayer) {
       // set ORIGIN
       this.originCell = clickedCell;
+      this.grid.selectCell(this.originCell);
     }
     // CLICKED is NOT player cell? -> ignore.
   }
@@ -65,6 +70,7 @@ Game.prototype.onPlayerClick = function(clickedCell) {
     if(isTargetAndOriginTheSame) {
       // unset ORIGIN
       this.originCell = undefined;
+      this.grid.unselectCell();
     }
     else if (isTargetAndOriginAdjacent) {
       if (isTargetOccupiedByOtherPlayer) {
@@ -82,10 +88,12 @@ Game.prototype.onPlayerClick = function(clickedCell) {
       if (isTargetOccupiedByPlayer) {
         // set ORIGIN
         this.originCell = clickedCell;
+        this.grid.selectCell(this.originCell);
       }
       // TARGET is occupied by other player or unoccupied
       else {
         this.originCell = undefined;
+        this.grid.unselectCell();
       }
     }
   }
