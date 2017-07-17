@@ -37,6 +37,7 @@ Game.prototype.grow = function() {
 };
 
 Game.prototype.onAdvanceTurn = function() {
+  this.unselectOrigin();
   this.npcs.forEach(function (player) { player.playTurn.call(player); });
   this.grow();
   this.grid.draw();
@@ -50,8 +51,7 @@ Game.prototype.onPlayerClick = function(clickedCell) {
   var isTargetOccupiedByOtherPlayer = (!isTargetOccupiedByPlayer && !isTargetUnoccupied);
 
   if (isClickOnEmpty) {
-      this.originCell = undefined;
-      this.grid.unselectCell();
+      this.unselectOrigin();
   }
   else if (!isOriginSet) {
     // CLICKED is player cell?
@@ -69,8 +69,7 @@ Game.prototype.onPlayerClick = function(clickedCell) {
 
     if(isTargetAndOriginTheSame) {
       // unset ORIGIN
-      this.originCell = undefined;
-      this.grid.unselectCell();
+      this.unselectOrigin();
     }
     else if (isTargetAndOriginAdjacent) {
       if (isTargetOccupiedByOtherPlayer) {
@@ -92,12 +91,21 @@ Game.prototype.onPlayerClick = function(clickedCell) {
       }
       // TARGET is occupied by other player or unoccupied
       else {
-        this.originCell = undefined;
-        this.grid.unselectCell();
+        this.unselectOrigin();
       }
     }
   }
+  // unselect cell if no more actions are possible
+  if (this.originCell && this.originCell.population === 1) {
+    this.unselectOrigin();
+  }
+
   this.grid.draw();
+};
+
+Game.prototype.unselectOrigin = function(cell) {
+  this.originCell = undefined;
+  this.grid.unselectCell();
 };
 
 var canvasSize = Grid.calculateCanvasSize();
