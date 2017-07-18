@@ -47,6 +47,12 @@ Game.prototype.onPlayerDoubleClick = function(clickedCell) {
   this.resolvePlayerAction(clickedCell, true);
 };
 
+Game.prototype.onPlayerShiftClick = function(clickedCell) {
+  this.unselectOrigin();
+  this.player.moveAllAdjacentToCell(clickedCell);
+  this.grid.draw();
+};
+
 Game.prototype.onPlayerClick = function(clickedCell) {
   this.resolvePlayerAction(clickedCell, false);
 };

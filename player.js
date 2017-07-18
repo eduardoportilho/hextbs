@@ -6,6 +6,16 @@ function Player(id) {
   this.id = id;
 }
 
+Player.prototype.moveAllAdjacentToCell = function(targetCell) {
+  if (targetCell.player != this.id && targetCell.player !== undefined) {
+    throw new Error('Trying to move to an cell occupied by other player!');
+  }
+  var adjcentPlayerCellsWithPopulation = this._getAdjcentPlayerCellsWithPopulation(targetCell);
+  adjcentPlayerCellsWithPopulation.forEach(function (originCell) {
+    this.moveToCell(originCell, targetCell, true);
+  }.bind(this));
+};
+
 Player.prototype.moveToCell = function(originCell, targetCell, moveAll) {
   if (originCell.player != this.id) {
     throw new Error('Trying to move from a cell that is not occupied by player!');
@@ -27,7 +37,6 @@ Player.prototype.moveToEmptyCell = function(targetCell) {
   if (targetCell.population > 0) {
     return;
   }
-
   var adjcentPlayerCellsWithPopulation = this._getAdjcentPlayerCellsWithPopulation(targetCell);
 
   var totalMovingPopulation = 0;

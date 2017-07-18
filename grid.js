@@ -155,7 +155,11 @@ Grid.prototype.onClick = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
-  this.game.onPlayerClick(cellOverMouse);
+  if (e.shiftKey) {
+    this.game.onPlayerShiftClick(cellOverMouse);
+  } else {
+    this.game.onPlayerClick(cellOverMouse);
+  }
 }
 
 Grid.prototype.onDoubleClick = function(e) {
