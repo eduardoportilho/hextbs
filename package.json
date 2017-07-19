@@ -1,0 +1,23 @@
+{
+  "name": "hextbs",
+  "version": "1.0.0",
+  "description": "Hex turn-based strategy game",
+  "main": "attack.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eduardoportilho/hextbs.git"
+  },
+  "keywords": [],
+  "author": "Eduardo <eduardo@portilho.com> (http://www.portilho.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eduardoportilho/hextbs/issues"
+  },
+  "homepage": "https://github.com/eduardoportilho/hextbs#readme",
+  "devDependencies": {
+    "webpack": "^3.3.0"
+  }
+}
