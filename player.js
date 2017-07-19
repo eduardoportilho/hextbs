@@ -5,25 +5,45 @@
 function Player(id) {
   this.id = id;
 }
+Player.POPULATION_GROUP_SIZE = 3;
+Player.MOVE_TYPE_ALL = 'all';
+Player.MOVE_TYPE_GROUP = 'group';
+Player.MOVE_TYPE_SINGLE = 'single';
 
 Player.prototype.moveAllAdjacentToCell = function(targetCell) {
   if (targetCell.player != this.id && targetCell.player !== undefined) {
-    throw new Error('Trying to move to an cell occupied by other player!');
+    //Trying to move to an cell occupied by other player!
+    return;
   }
   var adjcentPlayerCellsWithPopulation = this._getAdjcentPlayerCellsWithPopulation(targetCell);
   adjcentPlayerCellsWithPopulation.forEach(function (originCell) {
-    this.moveToCell(originCell, targetCell, true);
+    this.moveToCell(originCell, targetCell, Player.MOVE_TYPE_ALL);
   }.bind(this));
 };
-
-Player.prototype.moveToCell = function(originCell, targetCell, moveAll) {
+/**
+ * Move population from origin to target.
+ * @param  {Cell} originCell
+ * @param  {Cell} targetCell 
+ * @param  {string} typeOfMove - Determine the population to move:
+ *    all: move all available population.
+ *    group: move a fixed number (POPULATION_GROUP_SIZE).
+ *    sigle: move 1.
+ */
+Player.prototype.moveToCell = function(originCell, targetCell, typeOfMove) {
   if (originCell.player != this.id) {
-    throw new Error('Trying to move from a cell that is not occupied by player!');
+    //Trying to move from a cell that is not occupied by player!
+    return;
   }
   var availablePopulation = originCell.population - 1;
-  var movingPopulation = availablePopulation;
-  if (movingPopulation > 1 && !moveAll) {
-    movingPopulation = 1;
+  if (availablePopulation < 1) {
+    return;
+  }
+
+  var movingPopulation = 1;
+  if (typeOfMove === 'all') {
+    movingPopulation = availablePopulation;
+  } else if (typeOfMove === 'group') {
+    Math.min(availablePopulation, Player.POPULATION_GROUP_SIZE);
   }
 
   if (movingPopulation > 0) {

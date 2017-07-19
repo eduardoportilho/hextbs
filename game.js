@@ -44,7 +44,7 @@ Game.prototype.onAdvanceTurn = function() {
 };
 
 Game.prototype.onPlayerDoubleClick = function(clickedCell) {
-  this.resolvePlayerAction(clickedCell, true);
+  this.resolvePlayerAction(clickedCell, Player.MOVE_TYPE_GROUP);
 };
 
 Game.prototype.onPlayerShiftClick = function(clickedCell) {
@@ -54,11 +54,11 @@ Game.prototype.onPlayerShiftClick = function(clickedCell) {
 };
 
 Game.prototype.onPlayerClick = function(clickedCell) {
-  this.resolvePlayerAction(clickedCell, false);
+  this.resolvePlayerAction(clickedCell, Player.MOVE_TYPE_SINGLE);
 };
 
-Game.prototype.resolvePlayerAction = function(clickedCell, moveAll) {
-  moveAll = moveAll || false;
+Game.prototype.resolvePlayerAction = function(clickedCell, moveType) {
+  moveType = moveType || Player.MOVE_TYPE_SINGLE;
   var isClickOnEmpty = (clickedCell === undefined);
   var isOriginSet = (this.originCell !== undefined);
   var isTargetOccupiedByPlayer = (clickedCell && clickedCell.player === Game.PLAYER_ID);
@@ -94,7 +94,7 @@ Game.prototype.resolvePlayerAction = function(clickedCell, moveAll) {
       // TARGET is occupied by player or unoccupied
       else {
         // move 1 pop to CLICKED
-        this.player.moveToCell(this.originCell, clickedCell, moveAll);
+        this.player.moveToCell(this.originCell, clickedCell, moveType);
       }
     }
     // CLICKED is NOT adjacent to ORIGIN
