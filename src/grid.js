@@ -2,6 +2,9 @@
  * Knows how to draw the grid and pass user action to 'game'.
  */
 
+import HexPath from './hex-path';
+import Board from './board';
+
 function Grid(board, game) {
   this.board = board;
   this.game = game;
@@ -155,6 +158,9 @@ Grid.prototype.onClick = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
+  if (!cellOverMouse) {
+    return;
+  }
   if (e.shiftKey) {
     this.game.onPlayerShiftClick(cellOverMouse);
   } else {
@@ -221,3 +227,5 @@ Grid.calculateCanvasSize = function() {
     colCount: gridSize.colCount
   };
 };
+
+export default Grid;

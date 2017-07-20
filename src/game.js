@@ -2,6 +2,13 @@
  * Initial game setup  ; player click handler ; main game events (advance, grow)
  */
 
+import BoardGenerator from './board-generator';
+import Player from './player';
+import Npc from './npc';
+import Grid from './grid';
+import Random from './random';
+import Board from './board';
+
 function Game(rowCount, colCount, playerCount) {
   this.rowCount = rowCount;
   this.colCount = colCount;
@@ -123,13 +130,4 @@ Game.prototype.unselectOrigin = function(cell) {
   this.grid.unselectCell();
 };
 
-var canvasSize = Grid.calculateCanvasSize();
-var canvas = document.getElementById('game');
-canvas.height = canvasSize.height;
-canvas.width = canvasSize.width;
-
-var container = document.querySelector('.container');
-container.setAttribute("style", "width: " + canvasSize.width + "px;");
-
-var game = new Game(canvasSize.rowCount, canvasSize.colCount, 5);
-game.init();
+export default Game;

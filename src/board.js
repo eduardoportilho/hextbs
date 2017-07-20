@@ -133,3 +133,5 @@ Board.isAdjacent = function(cell1, cell2) {
       coord.col === cell2.col;
   }) >= 0;
 };
+
+export default Board;

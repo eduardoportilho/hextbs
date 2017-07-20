@@ -16,7 +16,7 @@ HexPath.buidHexPath = function(center, edgeSize) {
   var cornerPoint = {x:null, y:null},
     angleDeg, 
     angleRad;
-  edgeSize = edgeSize || Hex.HEX_EDGE_SIZE;
+  edgeSize = edgeSize || HexPath.HEX_EDGE_SIZE;
   // pseudo-stroke: leave some space between hexes
   edgeSize -= 1.5;
 
@@ -85,3 +85,5 @@ HexPath.calculateGridSize = function(viewportSize) {
     colCount: colCount,
   }
 };
+
+export default HexPath;

@@ -35,3 +35,5 @@ Random.shuffle = function(array) {
 
   return array;
 };
+
+export default Random;

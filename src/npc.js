@@ -2,6 +2,9 @@
  * Knows how to play as a NPC.
  */
 
+import Random from './random';
+import NpcActionResolvers from './npc-action-resolvers';
+
 function Npc(id, board) {
   this.id = id;
   this.board = board;
@@ -72,3 +75,5 @@ Npc.prototype.getPossibleActionsOnCell = function(originCell) {
   });
   return possibleActions;
 };
+
+export default Npc;

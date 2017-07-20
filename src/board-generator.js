@@ -2,6 +2,9 @@
  * Generate random board configurations.
  */
 
+import Board from './board';
+import Random from './random';
+
 var CONTINUE_TRACK_CHANCE = 0.7;
 
 function BoardGenerator(rowCount, colCount, playerCount) {
@@ -119,3 +122,5 @@ BoardGenerator.prototype.connectCellAndAdjcent = function(cell) {
     this.connectCellAndAdjcent(adjacent);
   }.bind(this));
 }
+
+export default BoardGenerator;

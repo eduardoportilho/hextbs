@@ -2,6 +2,8 @@
  * Knows how to execute player actions.
  */
 
+import Attack from './attack';
+
 function Player(id) {
   this.id = id;
 }
@@ -100,3 +102,5 @@ Player.prototype._getAdjcentPlayerCellsWithPopulation = function(targetCell) {
     .getAdjacentCells(targetCell)
     .filter(function(c) { return c.player === playerId && c.population > 1; });
 };
+
+export default Player;

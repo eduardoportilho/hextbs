@@ -2,6 +2,8 @@
  * Konws how to simulate attacks and update population after.
  */
 
+import Random from './random';
+
 function Attack() {}
 
 Attack.updatePopulationAfterAttack = function (attackerCell, defendingCell, attackResult) {
@@ -10,7 +12,6 @@ Attack.updatePopulationAfterAttack = function (attackerCell, defendingCell, atta
       attackerCell.population = 1;
       defendingCell.population = attackingSurvivors;
       defendingCell.player = attackerCell.player;
-      console.log(`Attacker won!`, attackerCell, defendingCell, attackResult); 
     } else {
       attackerCell.population = attackingSurvivors + 1;
       defendingCell.population -= attackResult.defenderKills;
@@ -44,3 +45,5 @@ Attack.simulateRiskAttack = function(attackingPopulation, defendingPopulation) {
     attackWin: defenderKills === defendingPopulation
   }
 };
+
+export default Attack;

@@ -2,6 +2,8 @@
  * Define the ways that a NPC can act given a list of possible actions.
  */
 
+import Attack from './attack';
+
 function NpcActionResolvers() {}
 
 NpcActionResolvers.spreadMove = function(possibleActions) {
@@ -71,3 +73,5 @@ NpcActionResolvers.attackIfStronger = function(possibleActions) {
   var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
   Attack.updatePopulationAfterAttack(origin, target, attackResult);
 };
+
+export default NpcActionResolvers;
