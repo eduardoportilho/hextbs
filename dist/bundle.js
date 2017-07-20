@@ -420,6 +420,9 @@ Grid.prototype.onClick = function(e) {
     y: e.clientY - e.target.offsetTop    
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
+  if (!cellOverMouse) {
+    return;
+  }
   if (e.shiftKey) {
     this.game.onPlayerShiftClick(cellOverMouse);
   } else {
