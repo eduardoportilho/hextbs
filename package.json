@@ -4,7 +4,7 @@
   "description": "Hex turn-based strategy game",
   "main": "attack.js",
   "scripts": {
-    "build": "./node_modules/.bin/webpack src/index.js dist/bundle.js",
+    "build": "webpack -p",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

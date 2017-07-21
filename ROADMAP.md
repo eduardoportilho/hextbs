@@ -2,13 +2,12 @@
 
 ## Bugs:
 * Sometimes a player cell is displayed with no population (player bg color and no label).
-* Partial border bug.
 
 ## Feats:
 * More control over actions:
-    - Select origin
-    - Select target (could be player cell, to move pops)
-    - Control the number of moved pops
+    - ~Select origin~
+    - ~Select target (could be player cell, to move pops)~
+    - ~Control the number of moved pops~
     - Avoid multiple actions on same cell
 * Moving restriction
 * 2 players
@@ -20,5 +19,5 @@
 
 ## Infra:
 * Babel + es6
-* Bundle & minify (webpack?)
+* ~Bundle & minify (webpack?)~
 * Unit tests
