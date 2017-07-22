@@ -159,7 +159,7 @@ Grid.prototype.onClick = function(e) {
   };
   var cellOverMouse = this.getCellOnPoint(mousePosition);
   if (!cellOverMouse) {
-    return;
+    return this.game.onPlayerClickEmptySpace();
   }
   if (e.shiftKey) {
     this.game.onPlayerShiftClick(cellOverMouse);

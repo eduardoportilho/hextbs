@@ -60,6 +60,11 @@ Game.prototype.onPlayerShiftClick = function(clickedCell) {
   this.grid.draw();
 };
 
+Game.prototype.onPlayerClickEmptySpace = function(clickedCell) {
+  this.unselectOrigin();
+  this.grid.draw();
+};
+
 Game.prototype.onPlayerClick = function(clickedCell) {
   this.resolvePlayerAction(clickedCell, Player.MOVE_TYPE_SINGLE);
 };
