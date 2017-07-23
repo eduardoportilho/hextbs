@@ -11,7 +11,7 @@ NpcActionResolvers.spreadMove = function(possibleActions) {
     .filter(function(a) {return a.type === 'move';})
     .sort(function(a1, a2) {return a2.targetCount - a1.targetCount;});
   if (!moveActions.length) {
-    return;
+    return false;
   }
   var origin = moveActions[0].origin;
   var targets = moveActions[0].targets;
@@ -29,12 +29,16 @@ NpcActionResolvers.spreadMove = function(possibleActions) {
     target.population = movingPopulation;
     origin.population = stayingPopulation;
   }
+  return true;
 };
 
 NpcActionResolvers.stay = function(possibleActions) {
   var stayAction = possibleActions.find(function (a) {return a.type === 'stay';});
   if (stayAction) {
     stayAction.origin.noAction = true;
+    return true;
+  } else {
+    return false;
   }
 };
 
@@ -46,7 +50,7 @@ NpcActionResolvers.kamikazeAttack = function(possibleActions) {
     .filter(function(a) {return a.type === 'attack';})
     .sort(function(a1, a2) {return a2.positiveChances - a1.positiveChances;});
   if (!attackActions.length) {
-    return;
+    return false;
   }
   var origin = attackActions[0].origin;
   var target = attackActions[0].target;
@@ -54,6 +58,7 @@ NpcActionResolvers.kamikazeAttack = function(possibleActions) {
 
   var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
   Attack.updatePopulationAfterAttack(origin, target, attackResult);
+  return true;
 };
 
 /**
@@ -64,7 +69,7 @@ NpcActionResolvers.attackIfStronger = function(possibleActions) {
     .filter(function(a) {return a.type === 'attack' && a.chances > 0; })
     .sort(function(a1, a2) {return a2.positiveChances - a1.positiveChances;});
   if (!attackActions.length) {
-    return;
+    return false;
   }
   var origin = attackActions[0].origin;
   var target = attackActions[0].target;
@@ -72,6 +77,7 @@ NpcActionResolvers.attackIfStronger = function(possibleActions) {
 
   var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
   Attack.updatePopulationAfterAttack(origin, target, attackResult);
+  return true;
 };
 
 export default NpcActionResolvers;

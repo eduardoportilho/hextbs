@@ -24,14 +24,19 @@ Npc.prototype.playTurn = function() {
   var possibleActions = this.getPossibleActions();
   // TODO Here the magic should happen: given the possible actions and the resolvers, the NPC should decide what to do.
   while(possibleActions.length) {
-    var resolver = Random.getRandomElementFromArray(resolvers);
-    resolver(possibleActions);
+    resolvers = Random.shuffle(resolvers);
+    for (var i = resolvers.length - 1; i >= 0; i--) {
+      var actionResolverFn = resolvers[i];
+      var actionApplied = actionResolverFn(possibleActions);
+      if (actionApplied) {
+        break;
+      }
+    }
     possibleActions = this.getPossibleActions();
-    // TODO Infinite loop risk?
   }
 };
 
-Npc.prototype.getPossibleActions = function() {
+Npc.prototype.getPossibleActions = function() { 
   var cellsWithPossibleActions = this.board.getPlayerCells(this.id).filter(function(cell) {
     return cell.population > 1 && cell.noAction !== true;
   });
