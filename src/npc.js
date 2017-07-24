@@ -9,6 +9,7 @@ function Npc(id, board) {
   this.id = id;
   this.board = board;
   this.actionResolvers = [
+    NpcActionResolvers.singleCellMove,
     NpcActionResolvers.spreadMove,
     NpcActionResolvers.stay,
     NpcActionResolvers.kamikazeAttack,
@@ -57,12 +58,14 @@ Npc.prototype.getPossibleActionsOnCell = function(originCell) {
     }];
   
   // move to empty
-  possibleActions.push({
-    type: 'move',
-    origin: originCell,
-    targetCount: emptyCells.length,
-    targets: emptyCells
-  });
+  if (emptyCells.length > 0) {
+    possibleActions.push({
+      type: 'move',
+      origin: originCell,
+      targetCount: emptyCells.length,
+      targets: emptyCells
+    }); 
+  }
 
   //attack enemy
   enemyCells.forEach(function (enemyCell) {

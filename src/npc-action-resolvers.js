@@ -6,6 +6,25 @@ import Attack from './attack';
 
 function NpcActionResolvers() {}
 
+NpcActionResolvers.singleCellMove = function(possibleActions) {
+  var moveActions = possibleActions
+    .filter(function(a) {return a.type === 'move';})
+    .sort(function(a1, a2) {return a2.origin.population - a1.origin.population;}); 
+  if (!moveActions.length) {
+    return false;
+  }
+  var origin = moveActions[0].origin;
+  var target = moveActions[0].targets[0];
+  var playerId = origin.player;
+  var movingPopulation = origin.population - 1;
+
+  target.player = playerId;
+  target.population = movingPopulation;
+  origin.population = 1;
+  console.log('NPC ' + playerId + ': singleCellMove');
+  return true;
+};
+
 NpcActionResolvers.spreadMove = function(possibleActions) {
   var moveActions = possibleActions
     .filter(function(a) {return a.type === 'move';})
@@ -29,6 +48,7 @@ NpcActionResolvers.spreadMove = function(possibleActions) {
     target.population = movingPopulation;
     origin.population = stayingPopulation;
   }
+  console.log('NPC ' + playerId + ': spreadMove');
   return true;
 };
 
@@ -36,6 +56,7 @@ NpcActionResolvers.stay = function(possibleActions) {
   var stayAction = possibleActions.find(function (a) {return a.type === 'stay';});
   if (stayAction) {
     stayAction.origin.noAction = true;
+    console.log('NPC ' + stayAction.origin.player + ': stay');
     return true;
   } else {
     return false;
@@ -58,6 +79,7 @@ NpcActionResolvers.kamikazeAttack = function(possibleActions) {
 
   var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
   Attack.updatePopulationAfterAttack(origin, target, attackResult);
+  console.log('NPC ' + playerId + ': kamikazeAttack');
   return true;
 };
 
@@ -77,6 +99,7 @@ NpcActionResolvers.attackIfStronger = function(possibleActions) {
 
   var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
   Attack.updatePopulationAfterAttack(origin, target, attackResult);
+  console.log('NPC ' + playerId + ': attackIfStronger');
   return true;
 };
 
