@@ -37,6 +37,10 @@ Npc.prototype.playTurn = function() {
   }
 };
 
+/**
+ * For each cell with pop > 1 and no flag, get possible actions
+ * @return {Action[]} Actions
+ */
 Npc.prototype.getPossibleActions = function() { 
   var cellsWithPossibleActions = this.board.getPlayerCells(this.id).filter(function(cell) {
     return cell.population > 1 && cell.noAction !== true;

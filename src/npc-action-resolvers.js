@@ -76,8 +76,9 @@ NpcActionResolvers.kamikazeAttack = function(possibleActions) {
   var origin = attackActions[0].origin;
   var target = attackActions[0].target;
   var playerId = origin.player;
+  var attackingPopulation = origin.population - 1;
 
-  var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
+  var attackResult = Attack.simulateRiskAttack(attackingPopulation, target.population);
   Attack.updatePopulationAfterAttack(origin, target, attackResult);
   console.log('NPC ' + playerId + ': kamikazeAttack');
   return true;
@@ -96,8 +97,9 @@ NpcActionResolvers.attackIfStronger = function(possibleActions) {
   var origin = attackActions[0].origin;
   var target = attackActions[0].target;
   var playerId = origin.player;
+  var attackingPopulation = origin.population - 1;
 
-  var attackResult = Attack.simulateRiskAttack(origin.population, target.population);
+  var attackResult = Attack.simulateRiskAttack(attackingPopulation, target.population);
   Attack.updatePopulationAfterAttack(origin, target, attackResult);
   console.log('NPC ' + playerId + ': attackIfStronger');
   return true;
