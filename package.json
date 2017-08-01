@@ -2,7 +2,7 @@
   "name": "hextbs",
   "version": "1.0.0",
   "description": "Hex turn-based strategy game",
-  "main": "attack.js",
+  "main": "index.js",
   "scripts": {
     "build": "webpack",
     "dist": "webpack -p",
